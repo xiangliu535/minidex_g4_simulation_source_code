@@ -1,0 +1,18 @@
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+
+#/HPGe/det/GDMLsourceFile /Users/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/old_geometry/tueb_runIII_WithRoom_ONLY_Detectors_Sensitive.gdml
+/HPGe/det/GDMLsourceFile /Users/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/GDML_RunV_WithRoom_Run5_SpecialForGeant4.gdml
+
+/run/initialize
+
+
+/xe/gun/type Point
+/xe/gun/particle mu-
+/xe/gun/energy   10.0 GeV
+/xe/gun/position 0.0 0.0 -100.0 cm
+/xe/gun/direction 0 0 1
+

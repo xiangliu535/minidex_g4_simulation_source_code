@@ -1,0 +1,1501 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<gdml xmlns:gdml="http://cern.ch/2001/Schemas/GDML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/GDML_2_10_0/src/GDMLSchema/gdml.xsd">
+
+<!-- Define variables, constants & etc... -->
+<!-- the idea is to define all variables got from plots, other variables are all calculated online -->
+<define>
+
+   <!-- General variables -->
+    <constant name="HALFPI" value="pi/2."/>
+    <constant name="THREEHALFPI" value="3.*pi/2."/>
+    <constant name="PI" value="1.*pi"/>
+    <constant name="TWOPI" value="2.*pi"/>
+    <constant name="FOURPI" value="4.*pi"/>
+    <position name="center"/>
+    <rotation name="identity"/>
+
+<!-- all constants are with the unit in mm -->
+
+   <!-- lead castle -->
+   <constant name="PbCastle_Length_in_X" value="750.0"/>
+   <constant name="PbCastle_Length_in_Y" value="650.0"/>
+   <constant name="PbCastle_CuSupportPlate_Height" value="5.0"/>
+   <constant name="PbCastle_Pure_Height"    value="500.0"/>
+   <constant name="PbCastle_Origin_Height"  value="200.0"/> <!-- coordinate origin position in PbCastel -->
+   <variable name="PbCastle_Total_Height"   value="505.0"/>      <!-- PbCastle_CuSupportPlate_Height + PbCastle_Pure_Height"/ -->
+   <variable name="PbCastle_Zshift"         value="PbCastle_Total_Height/2.0-PbCastle_Origin_Height"/>
+   <variable name="CuSupportPlate_Zshift"   value="PbCastle_Total_Height/2.0-150.0-PbCastle_CuSupportPlate_Height/2.0"/>
+   <position name="Shift_CuSupportPlate_in_PbCastle" z="CuSupportPlate_Zshift" unit="mm"/>
+   <position name="Shift_PbCastle" z="PbCastle_Zshift" unit="mm"/>
+
+   <!-- lead castle middle hole -->
+   <constant name="PbCastle_MiddleHole_Length_in_X" value="350.0"/>
+   <constant name="PbCastle_MiddleHole_Length_in_Y" value="550.0"/>  <!-- 50mm lead bricks on both back and front -->
+   <constant name="PbCastle_MiddleHole_Height"      value="300.0"/>
+   <variable name="PbCastle_MiddleHole_Zshift_to_PbCastle" value="0.0 - PbCastle_Total_Height/2.0 + 50.0 + PbCastle_MiddleHole_Height/2.0"/>
+   <position name="Shift_PbCastle_MiddleHole" z="PbCastle_MiddleHole_Zshift_to_PbCastle" unit="mm"/> <!-- middle hole relative to PbCastle -->
+
+   <!-- Table -->
+   <constant name="Table_Length_in_X" value="1000.0"/>
+   <constant name="Table_Length_in_Y" value="1500.0"/>
+   <constant name="Table_WoodPlank_Height" value="27.0"/>
+   <constant name="Table_Al_Width" value="80.0"/>
+   <variable name="Table_Total_Height" value="27.0+80.0+400.0"/>  <!-- need confirmation -->
+   <!-- BottomWoodPlank Cutting away 4 corners x is 1000/2-80/2=460.0 y is 1500/2-80/2=710 -->
+   <position name="Shift_BottomWoodPlank_Cut1" x="-460" y="-710" unit="mm"/>
+   <position name="Shift_BottomWoodPlank_Cut2" x=" 460" y="-710" unit="mm"/>
+   <position name="Shift_BottomWoodPlank_Cut3" x="-460" y=" 710" unit="mm"/>
+   <position name="Shift_BottomWoodPlank_Cut4" x=" 460" y=" 710" unit="mm"/>
+   <!-- WoodPlank and Bottom_WoodPlank inside world volume -->
+   <position name="Shift_Table_WoodPlank"       z="0.0 - PbCastle_Origin_Height - Table_WoodPlank_Height/2.0" unit="mm"/>
+   <position name="Shift_Table_BottomWoodPlank" z="-690.51" unit="mm"/>  <!-- NEED CONFIRMATION -->
+<!--   <position name="Shift_Table_BottomWoodPlank" z="0.0 - PbCastle_Origin_Height - Table_Total_Height/2.0 - 200.0"     unit="mm"/> -->
+
+   <!-- CryoCooler -->
+   <constant name="CryoCooler_Length_in_X" value="145.0"/>
+   <constant name="CryoCooler_Length_in_Y" value="313.0"/>
+   <constant name="CryoCooler_Height"      value="287.0"/>
+   <constant name="CryoCooler_Origin_Height"  value="171.0"/> 
+   <variable name="CryoCooler_Zshift"  value="CryoCooler_Height/2.0 - CryoCooler_Origin_Height"/> 
+   <variable name="CryoCooler_Yshift"  value="PbCastle_Length_in_Y/2.0 + CryoCooler_Length_in_Y/2.0"/>
+   <position name="Shift_XtRaA_CryoCooler" y="    CryoCooler_Yshift" z="CryoCooler_Zshift" unit="mm"/>
+   <position name="Shift_XtRaB_CryoCooler" y="0.0-CryoCooler_Yshift" z="CryoCooler_Zshift" unit="mm"/>
+
+   <!-- water tank and water volume -->
+   <constant name="WaterTank_Length_in_X" value="350.0"/>
+   <constant name="WaterTank_Length_in_Y" value="550.0"/>
+   <constant name="WaterTank_Height"      value="300.0"/>
+   <constant name="WaterTank_Wall_Thickness" value="10.0"/>
+   <constant name="WaterTank_MiddleHole_Length_in_X" value="130.0"/>
+   <constant name="WaterTank_MiddleHole_Length_in_Y" value="550.0"/>
+   <constant name="WaterTank_MiddleHole_Height"    value="100.0"/>
+
+   <variable name="WaterVolume_Length_in_X" value="WaterTank_Length_in_X - WaterTank_Wall_Thickness*2.0"/>
+   <variable name="WaterVolume_Length_in_Y" value="WaterTank_Length_in_Y - WaterTank_Wall_Thickness*2.0"/>
+   <variable name="WaterVolume_Height" value="WaterTank_Height - WaterTank_Wall_Thickness*2.0"/>
+   <variable name="WaterVolume_MiddleHole_Length_in_X" value="WaterTank_MiddleHole_Length_in_X + WaterTank_Wall_Thickness*2.0"/>
+   <variable name="WaterVolume_MiddleHole_Length_in_Y" value="WaterVolume_Length_in_Y"/>
+   <variable name="WaterVolume_MiddleHole_Height"      value="WaterTank_MiddleHole_Height + WaterTank_Wall_Thickness*2.0"/>
+
+   <!-- Desk Top Surface -->
+   <variable name="DeskSurface_in_Z"  value="0.0-PbCastle_Origin_Height"/>
+
+  <!-- EndCap same for XtraA and XtraB -->
+   <constant name="XtRa_EndCap_Radius" value="89.1/2.0"/>
+   <constant name="XtRa_EndCap_Length"   value="160.0"/>
+   <constant name="XtRa_EndCap_Wall_Thickness"  value="1.5"/>
+   <constant name="XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance" value="5.0"/>
+   <rotation name="Rotation_XtRaA_rotatebyx" unit="deg" x="-90.0"/>
+   <rotation name="Rotation_XtRaB_rotatebyx" unit="deg" x=" 90.0"/>
+
+  <!-- ColdFinger outside EndCap in the world volume -->
+   <constant name="XtRa_OutColdFinger_Length"   value="102.0-50.0"/> <!-- this the cooling finger outside the endcap, ignore the part inside Pb bricks -->
+   <constant name="XtRa_OutColdFinger_OuterRadius"   value="25.0/2.0"/>
+   <constant name="XtRa_OutColdFinger_InnerRadius"   value="25.0/2.0-1.0"/>
+   <variable name="XtRa_OutColdFinger_YShift" value="PbCastle_Length_in_Y/2.0-50.0-XtRa_OutColdFinger_Length/2.0"/>
+   <position name="Shift_XtRaA_OutColdFinger" y="    XtRa_OutColdFinger_YShift" unit="mm"/>
+   <position name="Shift_XtRaB_OutColdFinger" y="0.0-XtRa_OutColdFinger_YShift" unit="mm"/>
+ <!-- CuColdFinger inside the OutColdFinger -->
+   <constant name="XtRa_OutCuColdFinger_Radius" value="20.0/2.0"/>
+
+
+  <!-- EndCap position in world volume -->
+   <variable name="XtRa_EndCap_YShift" value="PbCastle_Length_in_Y/2.0 - 50.0 - XtRa_OutColdFinger_Length - XtRa_EndCap_Length/2.0"/>
+   <position name="Shift_XtRaA_EndCap" y="    XtRa_EndCap_YShift" unit="mm"/>
+   <position name="Shift_XtRaB_EndCap" y="0.0-XtRa_EndCap_YShift" unit="mm"/>
+
+   <!-- inside EndCap Entrance window carbon -->
+   <constant name="XtRa_EndCap_EntranceWindow_Thickness"  value="0.6"/>
+   <variable name="XtRa_EndCap_EntranceWindow_Zshift"  value="XtRa_EndCap_Length/2.0 - XtRa_EndCap_EntranceWindow_Thickness/2.0"/>
+   <position name="Shift_XtRa_EndCap_EntranceWindow" z="XtRa_EndCap_EntranceWindow_Zshift" unit="mm"/>
+
+   <!-- Vacuum is inside EndCap -->
+   <variable name="XtRa_EndCapVacuum_Radius" value="XtRa_EndCap_Radius - XtRa_EndCap_Wall_Thickness"/> 
+   <variable name="XtRa_EndCapVacuum_Length" value="XtRa_EndCap_Length - 2.0*XtRa_EndCap_EntranceWindow_Thickness"/>
+
+   <!-- Aluminum Holders inside EndCapVacuum -->
+   <constant name="XtRa_EndCap_AlHolder1_Length" value="75.0"/>
+   <constant name="XtRa_EndCap_AlHolder1_InnerRadius" value="72.0/2.0"/>
+   <constant name="XtRa_EndCap_AlHolder1_OuterRadius" value="73.6/2.0"/>
+   <variable name="XtRa_EndCap_AlHolder1_Zshift" value="XtRa_EndCapVacuum_Length/2.0 - XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRa_EndCap_AlHolder1_Length/2.0"/>
+   <position name="Shift_XtRa_EndCap_AlHolder1" z="XtRa_EndCap_AlHolder1_Zshift" unit="mm"/>
+
+   <constant name="XtRa_EndCap_AlHolder2_Length" value="3.0"/>
+   <constant name="XtRa_EndCap_AlHolder2_InnerRadius" value="15.0/2.0"/>
+   <constant name="XtRa_EndCap_AlHolder2_OuterRadius" value="73.6/2.0"/>
+   <variable name="XtRa_EndCap_AlHolder2_Zshift" value="XtRa_EndCap_AlHolder1_Zshift - XtRa_EndCap_AlHolder1_Length/2.0 - XtRa_EndCap_AlHolder2_Length/2.0"/>
+   <position name="Shift_XtRa_EndCap_AlHolder2" z="XtRa_EndCap_AlHolder2_Zshift" unit="mm"/>
+
+   <constant name="XtRa_EndCap_AlHolder3_Length" value="10.0"/>
+   <constant name="XtRa_EndCap_AlHolder3_InnerRadius" value="15.0/2.0"/>
+   <constant name="XtRa_EndCap_AlHolder3_OuterRadius" value="25.0/2.0"/>
+   <variable name="XtRa_EndCap_AlHolder3_Zshift" value="XtRa_EndCap_AlHolder2_Zshift - XtRa_EndCap_AlHolder2_Length/2.0 - XtRa_EndCap_AlHolder3_Length/2.0"/>
+   <position name="Shift_XtRa_EndCap_AlHolder3" z="XtRa_EndCap_AlHolder3_Zshift" unit="mm"/>
+
+   <!-- Cu ColdFinger inside EndCapVacuum -->
+   <variable name="XtRa_EndCap_ColdFinger_Length" value="XtRa_EndCapVacuum_Length- XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRa_EndCap_AlHolder1_Length - XtRa_EndCap_AlHolder2_Length - XtRa_EndCap_AlHolder3_Length"/> <!-- the actual length is 65.8-->
+   <constant name="XtRa_EndCap_ColdFinger_OuterRadius" value="20.0/2.0"/>
+   <variable name="XtRa_EndCap_ColdFinger_Zshift" value="XtRa_EndCap_AlHolder3_Zshift-XtRa_EndCap_AlHolder3_Length/2.0-XtRa_EndCap_ColdFinger_Length/2.0"/>
+   <position name="Shift_XtRa_EndCap_ColdFinger" z="XtRa_EndCap_ColdFinger_Zshift" unit="mm"/>
+
+   <!-- XtRa A and B Crystals inside EndCapVacuum -->
+   <constant name="XtRaA_Crystal_Radius" value="70.5/2.0"/>
+   <constant name="XtRaA_Crystal_Length" value="63.5"/>
+   <constant name="XtRaB_Crystal_Radius" value="69.0/2.0"/>
+   <constant name="XtRaB_Crystal_Length" value="72.0"/>
+
+   <!-- only side and bottom where InnerHole is -->
+   <constant name="XtRa_Crystal_DeadLayer_Thickness" value="0.6"/> 
+
+   <!-- InnerHole to be subtracted from the SensitiveCrystal -->
+   <constant name="XtRaA_SensitiveCrystal_InnerHole_Radius" value="9.5/2.0"/>
+   <variable name="XtRaA_SensitiveCrystal_InnerHole_Length" value="37.5-XtRa_Crystal_DeadLayer_Thickness"/>
+   <constant name="XtRaB_SensitiveCrystal_InnerHole_Radius" value="9.5/2.0"/>
+   <variable name="XtRaB_SensitiveCrystal_InnerHole_Length" value="45.5-XtRa_Crystal_DeadLayer_Thickness"/>
+
+   <!-- BarrelDeadLayer -->
+   <variable name="XtRaA_Crystal_BarrelDeadLayer_OuterRadius" value="XtRaA_Crystal_Radius"/>
+   <variable name="XtRaA_Crystal_BarrelDeadLayer_InnerRadius" value="XtRaA_Crystal_Radius - XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaA_Crystal_BarrelDeadLayer_Length"      value="XtRaA_Crystal_Length - XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaB_Crystal_BarrelDeadLayer_OuterRadius" value="XtRaB_Crystal_Radius"/>
+   <variable name="XtRaB_Crystal_BarrelDeadLayer_InnerRadius" value="XtRaB_Crystal_Radius - XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaB_Crystal_BarrelDeadLayer_Length"      value="XtRaB_Crystal_Length - XtRa_Crystal_DeadLayer_Thickness"/>
+  <!-- EndPlateDeadLayer -->
+   <variable name="XtRaA_Crystal_EndPlateDeadLayer_OuterRadius" value="XtRaA_Crystal_Radius"/>
+   <variable name="XtRaA_Crystal_EndPlateDeadLayer_InnerRadius" value="XtRaA_SensitiveCrystal_InnerHole_Radius"/>
+   <variable name="XtRaA_Crystal_EndPlateDeadLayer_Length"      value="XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaB_Crystal_EndPlateDeadLayer_OuterRadius" value="XtRaB_Crystal_Radius"/>
+   <variable name="XtRaB_Crystal_EndPlateDeadLayer_InnerRadius" value="XtRaB_SensitiveCrystal_InnerHole_Radius"/>
+   <variable name="XtRaB_Crystal_EndPlateDeadLayer_Length"      value="XtRa_Crystal_DeadLayer_Thickness"/>
+  <!-- position inside EndCapVacuum -->
+   <variable name="XtRaA_Crystal_BarrelDeadLayer_Zshift" value="XtRa_EndCapVacuum_Length/2.0 - XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRaA_Crystal_BarrelDeadLayer_Length/2.0"/>
+   <variable name="XtRaB_Crystal_BarrelDeadLayer_Zshift" value="XtRa_EndCapVacuum_Length/2.0 - XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRaB_Crystal_BarrelDeadLayer_Length/2.0"/>
+   <variable name="XtRaA_Crystal_EndPlateDeadLayer_Zshift" value="XtRaA_Crystal_BarrelDeadLayer_Zshift - XtRaA_Crystal_BarrelDeadLayer_Length/2.0 - XtRaA_Crystal_EndPlateDeadLayer_Length/2.0"/>
+   <variable name="XtRaB_Crystal_EndPlateDeadLayer_Zshift" value="XtRaB_Crystal_BarrelDeadLayer_Zshift - XtRaB_Crystal_BarrelDeadLayer_Length/2.0 - XtRaB_Crystal_EndPlateDeadLayer_Length/2.0"/>
+   <position name="Shift_XtRaA_Crystal_BarrelDeadLayer"   z="XtRaA_Crystal_BarrelDeadLayer_Zshift" unit="mm"/>
+   <position name="Shift_XtRaB_Crystal_BarrelDeadLayer"   z="XtRaB_Crystal_BarrelDeadLayer_Zshift" unit="mm"/>
+   <position name="Shift_XtRaA_Crystal_EndPlateDeadLayer" z="XtRaA_Crystal_EndPlateDeadLayer_Zshift" unit="mm"/>
+   <position name="Shift_XtRaB_Crystal_EndPlateDeadLayer" z="XtRaB_Crystal_EndPlateDeadLayer_Zshift" unit="mm"/>
+
+  <!-- sensitive volume and deadlayer are separately defined -->
+<!--
+   <variable name="XtRaA_SensitiveCrystal_Radius" value="XtRaA_Crystal_Radius-XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaA_SensitiveCrystal_Length" value="XtRaA_Crystal_Length-XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaB_SensitiveCrystal_Radius" value="XtRaB_Crystal_Radius-XtRa_Crystal_DeadLayer_Thickness"/>
+   <variable name="XtRaB_SensitiveCrystal_Length" value="XtRaB_Crystal_Length-XtRa_Crystal_DeadLayer_Thickness"/>
+-->
+   <variable name="XtRaA_SensitiveCrystal_Radius" value="XtRaA_Crystal_BarrelDeadLayer_InnerRadius"/>
+   <variable name="XtRaA_SensitiveCrystal_Length" value="XtRaA_Crystal_BarrelDeadLayer_Length"/>
+   <variable name="XtRaB_SensitiveCrystal_Radius" value="XtRaB_Crystal_BarrelDeadLayer_InnerRadius"/>
+   <variable name="XtRaB_SensitiveCrystal_Length" value="XtRaB_Crystal_BarrelDeadLayer_Length"/>
+  
+  <!-- sensitive crystal Zshift inside EndCapVacuum -->
+   <variable name="XtRaA_SensitiveCrystal_Zshift" value="XtRa_EndCapVacuum_Length/2.0 - XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRaA_SensitiveCrystal_Length/2.0"/>
+   <variable name="XtRaB_SensitiveCrystal_Zshift" value="XtRa_EndCapVacuum_Length/2.0 - XtRa_EndCap_Ge_to_EntranceWindow_Inner_Distance - XtRaB_SensitiveCrystal_Length/2.0"/>
+   <position name="Shift_XtRaA_SensitiveCrystal" z="XtRaA_SensitiveCrystal_Zshift" unit="mm"/>
+   <position name="Shift_XtRaB_SensitiveCrystal" z="XtRaB_SensitiveCrystal_Zshift" unit="mm"/>
+  <!-- sensitive crystal innerhole Zshift inside Crystal -->
+   <variable name="XtRaA_SensitiveCrystal_InnerHole_Zshift" value="0.0 - XtRaA_SensitiveCrystal_Length/2.0 + XtRaA_SensitiveCrystal_InnerHole_Length/2.0"/>
+   <variable name="XtRaB_SensitiveCrystal_InnerHole_Zshift" value="0.0 - XtRaB_SensitiveCrystal_Length/2.0 + XtRaB_SensitiveCrystal_InnerHole_Length/2.0"/>
+   <position name="Shift_XtRaA_SensitiveCrystal_InnerHole" z="XtRaA_SensitiveCrystal_InnerHole_Zshift" unit="mm"/>
+   <position name="Shift_XtRaB_SensitiveCrystal_InnerHole" z="XtRaB_SensitiveCrystal_InnerHole_Zshift" unit="mm"/>
+
+   <!-- Scint -->
+   <constant name="Scint_Thickness" value="50.0"/>
+   <constant name="Scint_BigBottom_Center_in_Z" value="-353.0"/> <!-- from on-site measurement, changed from -347, 20200505 -->
+   <constant name="Gap_Between_Scint_and_PbCastle" value="10.0"/>
+   <constant name="Gap_Between_Scints" value="10.0"/>
+
+   <variable name="Scint_BigTop_Zshift" value="PbCastle_Total_Height - PbCastle_Origin_Height + Gap_Between_Scint_and_PbCastle + Scint_Thickness/2.0"/>
+   <variable name="Scint_BigBottom_Zshift" value="Scint_BigBottom_Center_in_Z"/>
+   <position name="Shift_Scint_BigTop"    z="Scint_BigTop_Zshift" unit="mm"/>
+   <position name="Shift_Scint_BigBottom" z="Scint_BigBottom_Zshift" unit="mm"/>
+
+   <variable name="Scint_Small13_Xshift" value="-275."/>
+   <variable name="Scint_Small24_Xshift" value=" 275."/>
+   <variable name="Scint_Small12_Zshift" value="608.0"/>  <!-- from on-site measurement -->
+   <variable name="Scint_Small34_Zshift" value="1349.0"/> <!-- from on-site measurement -->
+   <position name="Shift_Scint_Small1" x="Scint_Small13_Xshift" z="Scint_Small12_Zshift" unit="mm"/>
+   <position name="Shift_Scint_Small2" x="Scint_Small24_Xshift" z="Scint_Small12_Zshift" unit="mm"/>
+   <position name="Shift_Scint_Small3" x="Scint_Small13_Xshift" z="Scint_Small34_Zshift" unit="mm"/>
+   <position name="Shift_Scint_Small4" x="Scint_Small24_Xshift" z="Scint_Small34_Zshift" unit="mm"/>
+
+   <position name="Shift_Scint_BottomBack"  y=" 650.0" z="Scint_BigBottom_Zshift" unit="mm"/>
+   <position name="Shift_Scint_BottomFront" y="-650.0" z="Scint_BigBottom_Zshift" unit="mm"/>
+
+   <variable name="Scint_BottomSide_Zshift" value="Scint_BigBottom_Zshift - Gap_Between_Scints - Scint_Thickness"/>
+   <position name="Shift_Scint_BottomSide1" x="-300.0" z="Scint_BottomSide_Zshift" unit="mm"/>
+   <position name="Shift_Scint_BottomSide2" x=" 300.0" z="Scint_BottomSide_Zshift" unit="mm"/>
+
+   <variable name="Scint_Side_Zshift" value="500.0/2.0 - PbCastle_Origin_Height"/>
+   <variable name="Scint_BigSide2_Xshift" value="      PbCastle_Length_in_X/2.0 + Gap_Between_Scint_and_PbCastle + Scint_Thickness/2.0"/>
+   <variable name="Scint_BigSide1_Xshift" value="0.0 - PbCastle_Length_in_X/2.0 - Gap_Between_Scint_and_PbCastle - Scint_Thickness/2.0"/>
+   <position name="Shift_Scint_BigSide1" x="Scint_BigSide1_Xshift" z="Scint_Side_Zshift" unit="mm"/>
+   <position name="Shift_Scint_BigSide2" x="Scint_BigSide2_Xshift" z="Scint_Side_Zshift" unit="mm"/>
+
+   <variable name="Scint_SmallSide13_Xshift" value="0.0 - PbCastle_Length_in_X/2.0 + 250.0/2.0"/>
+   <variable name="Scint_SmallSide24_Xshift" value="      PbCastle_Length_in_X/2.0 - 250.0/2.0"/>
+   <variable name="Scint_SmallSide12_Yshift" value="0.0 - PbCastle_Length_in_Y/2.0 - Gap_Between_Scint_and_PbCastle - Scint_Thickness/2.0"/>
+   <variable name="Scint_SmallSide34_Yshift" value="      PbCastle_Length_in_Y/2.0 + Gap_Between_Scint_and_PbCastle + Scint_Thickness/2.0"/>
+   <position name="Shift_Scint_SmallSide1" x="Scint_SmallSide13_Xshift" y="Scint_SmallSide12_Yshift" z="Scint_Side_Zshift" unit="mm"/>
+   <position name="Shift_Scint_SmallSide2" x="Scint_SmallSide24_Xshift" y="Scint_SmallSide12_Yshift" z="Scint_Side_Zshift" unit="mm"/>
+   <position name="Shift_Scint_SmallSide3" x="Scint_SmallSide13_Xshift" y="Scint_SmallSide34_Yshift" z="Scint_Side_Zshift" unit="mm"/>
+   <position name="Shift_Scint_SmallSide4" x="Scint_SmallSide24_Xshift" y="Scint_SmallSide34_Yshift" z="Scint_Side_Zshift" unit="mm"/>
+
+   <!-- Table Frames and Legs 8080 Al Profile-->
+   <!-- the Table has size 1000x1500 , the bottom Al Support Profile is parameterized as one 1000x1500x80 with 4 holes subtracted, each hole x=380 y=630-->
+    <position name="shiftAlBottomHole1" x="230.0" z="0.0" y="-355.0" unit="mm"/>
+    <position name="shiftAlBottomHole2" x="-230.0" z="0.0" y="-355.0" unit="mm"/>
+    <position name="shiftAlBottomHole3" x="230.0" z="0.0" y="355.0" unit="mm"/>
+    <position name="shiftAlBottomHole4" x="-230.0" z="0.0" y="355.0" unit="mm"/>
+    <position name="shiftAlBottom1" z="-267.01" unit="mm"/> <!-- the first layer of the Al Support Profile -->
+    <position name="shiftAlBottom2" z="-744.02" unit="mm"/> <!-- the second layer -->
+
+    <!-- the 4 AlProfile Legs under the first layer of the Al Support Profile -->
+    <position name="shiftAlLeg1" x="460.0" z="-505.52" y="710." unit="mm"/>
+    <position name="shiftAlLeg2" x="-460.0" z="-505.52" y="710." unit="mm"/>
+    <position name="shiftAlLeg3" x="460.0" z="-505.52" y="-710." unit="mm"/>
+    <position name="shiftAlLeg4" x="-460.0" z="-505.52" y="-710." unit="mm"/>
+    <!-- the 10 AlProfile Legs under the second layer of the Al Support Profile -->
+    <position name="shiftAlLegDownLF" x="460.0" z="-944.53" y="-710." unit="mm"/>
+    <position name="shiftAlLegDownLF1" x="460.0" z="-944.53" y="-236." unit="mm"/>
+    <position name="shiftAlLegDownRF" x="460.0" z="-944.53" y="710." unit="mm"/>
+    <position name="shiftAlLegDownRF1" x="460.0" z="-944.53" y="236." unit="mm"/>
+    <position name="shiftAlLegDownLM" x="0.0" z="-944.53" y="-710." unit="mm"/>
+    <position name="shiftAlLegDownRM" x="0.0" z="-944.53" y="710." unit="mm"/>
+    <position name="shiftAlLegDownLB" x="-460.0" z="-944.53" y="-710." unit="mm"/>
+    <position name="shiftAlLegDownLB1" x="-460.0" z="-944.53" y="-236." unit="mm"/>
+    <position name="shiftAlLegDownRB" x="-460.0" z="-944.53" y="710." unit="mm"/>
+    <position name="shiftAlLegDownRB1" x="-460.0" z="-944.53" y="236." unit="mm"/>
+
+   <!-- Al Profile 40x80 to hold the scintillator panels -->
+  
+    <position name="shiftAluminiumHorizontalBelowSmall3Small4_First"  x="0" z="1294" y="+140." unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowSmall3Small4_Second" x="0" z="1294" y="-140." unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowSmall1Small2_First"  x="0" z="553" y="+140." unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowSmall1Small2_Second" x="0" z="553" y="-140." unit="mm"/>
+   
+    <position name="shiftAluminiumLongVertical_First"   x="+525" z="145" y="+221" unit="mm"/>
+    <position name="shiftAluminiumLongVertical_Second"  x="+525" z="145" y="-221" unit="mm"/>
+    <position name="shiftAluminiumLongVertical_Third"   x="-525" z="145" y="+221" unit="mm"/>
+    <position name="shiftAluminiumLongVertical_Fourth"  x="-525" z="145" y="-221" unit="mm"/>
+    
+    <position name="shiftAluminiumSide_First_Left"  x="+457" z="+210" y="0" unit="mm"/>
+    <position name="shiftAluminiumSide_Second_Left" x="+484" z="+48"  y="0" unit="mm"/>
+    <position name="shiftAluminiumSide_Third_Left"  x="+457" z="-114"  y="0" unit="mm"/>
+    <position name="shiftAluminiumSide_First_Right"  x="-457" z="+210" y="0" unit="mm"/>
+    <position name="shiftAluminiumSide_Second_Right" x="-484" z="+48"  y="0" unit="mm"/>
+    <position name="shiftAluminiumSide_Third_Right"  x="-457" z="-114"  y="0" unit="mm"/>
+    
+    <position name="shiftAluminiumFront_Left_First"  x="+407.5" z="+129" y="407" unit="mm"/>
+    <position name="shiftAluminiumFront_Left_Second" x="+427.5" z="-33"  y="407" unit="mm"/>
+    <position name="shiftAluminiumFront_Right_First"  x="-407.5" z="+129" y="407" unit="mm"/>
+    <position name="shiftAluminiumFront_Right_Second" x="-427.5" z="-33"  y="407" unit="mm"/>
+    
+    <position name="shiftAluminiumBack_Left_First"  x="+407.5" z="+129" y="-407" unit="mm"/>
+    <position name="shiftAluminiumBack_Left_Second" x="+427.5" z="-33"  y="-407" unit="mm"/>
+    <position name="shiftAluminiumBack_Right_First"  x="-407.5" z="+129" y="-407" unit="mm"/>
+    <position name="shiftAluminiumBack_Right_Second" x="-427.5" z="-33"  y="-407" unit="mm"/>
+    
+    <variable name="AluminiumHorizontalBelowLong_Zshift"   value="Scint_BigBottom_Center_in_Z - Scint_Thickness*1.5 - Gap_Between_Scints*2.0 - 20.0"/> 
+    <position name="shiftAluminiumHorizontalBelowLong_First"   x="0" z="AluminiumHorizontalBelowLong_Zshift" y="+303" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowLong_Second"  x="0" z="AluminiumHorizontalBelowLong_Zshift" y="+139" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowLong_Third"   x="0" z="AluminiumHorizontalBelowLong_Zshift" y="-139" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowLong_Fourth"  x="0" z="AluminiumHorizontalBelowLong_Zshift" y="-303" unit="mm"/>
+   
+    <variable name="AluminiumHorizontalBelowMedium_Zshift" value="Scint_BigBottom_Center_in_Z - Scint_Thickness*0.5 - Gap_Between_Scints - 20.0"/> 
+    <position name="shiftAluminiumHorizontalBelowMedium_First"       x="0" z="AluminiumHorizontalBelowMedium_Zshift" y="+792" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowMedium_Second"      x="0" z="AluminiumHorizontalBelowMedium_Zshift" y="-792" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowMediumSmall_First"  x="0" z="AluminiumHorizontalBelowMedium_Zshift" y="+553" unit="mm"/>
+    <position name="shiftAluminiumHorizontalBelowMediumSmall_Second" x="0" z="AluminiumHorizontalBelowMedium_Zshift" y="-553" unit="mm"/>
+
+    <!-- concrete wall -->
+    <position name="ShiftRoomDoor" x="-1350." y="-2500." z="-750." unit="mm"/>
+    <position name="ShiftRoom" x="+2165." y="-1270." z="644" unit="mm"/>
+
+</define>
+
+<!-- ****************************************************** MATERIALS ************************************************************ -->
+<materials>
+    <!-- Elements -->
+    <element name="Hydrogen" formula="H" Z="1.">
+      <atom value="1.01"/>
+    </element>
+    <element name="Carbon" formula="C" Z="6.">
+      <atom value="12.0107"/>
+    </element>
+    <element name="Nitrogen" formula="N" Z="7."> 
+      <atom value="14.01"/>
+    </element>
+    <element name="Oxygen" formula="O" Z="8."> 
+      <atom value="16.0"/>
+    </element>
+    <element name="Fluorine" formula="F" Z="9.">
+      <atom value="18.9984"/>
+    </element>
+    <element name="Silicon" formula="Si" Z="14.">
+      <atom value="28.085"/>
+    </element>
+    <element name="Phosphorus" formula="P" Z="15.">
+      <atom value="30.973761998"/>
+    </element>
+    <element name="Sulfur" formula="S" Z="16.">
+      <atom value="32.06"/>
+    </element>
+    <element name="Chlorine" formula="Cl" Z="17.">
+      <atom value="35.453"/>
+    </element>
+    <element name="Potassium" formula="K" Z="19.">
+      <atom value="39.0983"/>
+    </element>
+    <element name="Calcium" formula="Ca" Z="20.">
+      <atom value="40.078"/>
+    </element>
+    <element name="Chromium" formula="Cr" Z="24.">
+      <atom value="51.9961"/>
+    </element>
+    <element name="Manganese" formula="Mn" Z="25.">
+      <atom value="54.938044"/>
+    </element>
+    <element name="Iron" formula="Fe" Z="26.">
+      <atom value="55.845"/>
+    </element>
+    <element name="Nickel" formula="Ni" Z="28.">
+      <atom value="58.6934"/>
+    </element>
+    <element name="Gadolinium" formula="Gd" Z="64.">
+      <atom value="157.25"/>
+    </element>
+    
+    <!-- Materials -->
+    <material name="Pb" formula="Pb" Z="82."> 
+      <D value="11.34" unit="g/cm3"/> 
+      <atom value="207.20"/>
+    </material>
+    <material name="Al" Z="13.0">
+      <D value="2.70" unit="g/cm3"/> 
+      <atom value="26.98"/>
+    </material>
+    <material name="Carbon_material" Z="6.0"> 
+      <D value="2.0" unit="g/cm3"/> 
+      <atom value="12.01"/>
+    </material>
+    <material name="Cu" Z="29.0">
+      <D value="8.96" unit="g/cm3"/> 
+      <atom value="63.55"/>
+    </material>
+    <material name="Ge" Z="32.0">
+      <D value="5.323" unit="g/cm3"/> 
+      <atom value="72.63"/>
+    </material>
+    <material name="Water" formula="H20" state="liquid">
+      <D value="1.0" unit="g/cm3"/>
+      <composite n="2" ref="Hydrogen"/>
+      <composite n="1" ref="Oxygen"/>
+    </material>
+    <material name="Air" state="gas">
+      <D value="1.290" unit="mg/cm3"/>
+      <fraction n="0.76" ref="Nitrogen"/>    <!-- here the fraction is mass fraction, be careful -->
+      <fraction n="0.24" ref="Oxygen"/>
+    </material>
+    <material name="Vacuum" state="gas">
+      <D value="1e-25" unit="g/cm3"/>
+      <fraction n="0.76" ref="Nitrogen" />    <!-- here the fraction is mass fraction, be careful -->
+      <fraction n="0.24" ref="Oxygen" />
+    </material>
+    <!-- Plastic for plastic container -->
+    <material name="Plastic" formula="C10H8O4">
+      <D value="1.400" unit="g/cm3"/>
+      <composite n="10" ref="Carbon"/>
+      <composite n="8"  ref="Hydrogen"/>
+      <composite n="4"  ref="Oxygen"/>
+    </material>
+    <!-- Wood aproximation for the table -->
+    <material name="Wood" formula="C6H10O5">
+      <D value="0.750"  unit="g/cm3"/>
+      <composite n="6"  ref="Carbon"/>
+      <composite n="10" ref="Hydrogen"/>
+      <composite n="5"  ref="Oxygen"/>
+    </material>
+    <!-- Aluminium for the Table (all it's volume wasn't of Al, it had "holes") aproximation -->
+    <!-- Al profile 80X80 4.9kg/m D=0.766 g/cm3, 8040 2.7kg/m D=0.844 g/cm3 -->
+    <material name="Al8080Profile" Z="13.0">
+      <D value="0.766" unit="g/cm3"/> 
+      <atom value="26.98"/>
+    </material>
+    <material name="Al8040Profile" Z="13.0">
+      <D value="0.844" unit="g/cm3"/> 
+      <atom value="26.98"/>
+    </material>
+
+    <!-- Cryo Cooler Density = 17kg/(14.5*28.7*31.3) = 1.305 g/cm3-->
+    <material name="CryoIron" Z="26.0">
+      <D value="1.305" unit="g/cm3"/> 
+      <atom value="55.845"/>
+    </material>
+
+    <!-- St Gobain scintillator material -->
+    <material name="Polyvinyltoluene" formula="C10H11">
+      <D value="1.032" unit="g/cm3"/>
+      <composite n="10" ref="Carbon"/>
+      <composite n="11"  ref="Hydrogen"/>
+    </material>
+    
+    <!-- Tuebingen scintillator material -->
+    <material name="Polystyrene" formula="C8H8">
+      <D value="1.04" unit="g/cm3"/>
+      <composite n="8" ref="Carbon"/>
+      <composite n="8"  ref="Hydrogen"/>
+    </material>
+
+    <!-- Portland Cement components -->
+    <material name="Tricalcium_silicate" formula="Ca3SiO5">
+      <D value="3.21" unit="g/cm3"/>
+      <composite n="3" ref="Calcium"/>
+      <composite n="1" ref="Silicon"/>
+      <composite n="5" ref="Oxygen"/>
+    </material>
+    <material name="Dicalcium_silicate" formula="Ca2SiO4">
+      <D value="3.28" unit="g/cm3"/>
+      <composite n="2" ref="Calcium"/>
+      <composite n="1" ref="Silicon"/>
+      <composite n="4" ref="Oxygen"/>
+    </material>
+    <material name="Tricalcium_aluminate" formula="Ca3Al2O6">
+      <D value="3.03" unit="g/cm3"/>
+      <composite n="3" ref="Calcium"/>
+      <composite n="2" ref="Al"/>
+      <composite n="6" ref="Oxygen"/>
+    </material>
+    <material name="Tetracalcium_aluminoferrite" formula="Ca4Al2Fe2O10">
+      <D value="3.73" unit="g/cm3"/>
+      <composite n="4" ref="Calcium"/>
+      <composite n="2" ref="Al"/>
+      <composite n="2" ref="Iron"/>
+      <composite n="6" ref="Oxygen"/>
+    </material>
+    <material name="Gypsum" formula="CaSO6H4">
+      <D value="2.32" unit="g/cm3"/>
+      <composite n="1" ref="Calcium"/>
+      <composite n="1" ref="Sulfur"/>
+      <composite n="6" ref="Oxygen"/>
+      <composite n="4" ref="Hydrogen"/>
+    </material>
+    <material name="Portland_cement">
+      <D value="3.217" unit="g/cm3"/>
+      <fraction n="0.50" ref="Tricalcium_silicate"/>
+      <fraction n="0.25" ref="Dicalcium_silicate"/>
+      <fraction n="0.10" ref="Tricalcium_aluminate"/>
+      <fraction n="0.10" ref="Tetracalcium_aluminoferrite"/>
+      <fraction n="0.05" ref="Gypsum"/>
+    </material>
+
+    <!-- Sand -->
+    <material name="Sand" formula="SiO2">
+      <D value="2.648" unit="g/cm3"/>
+      <composite n="1" ref="Silicon"/>
+      <composite n="2" ref="Oxygen"/>
+    </material>
+
+    <!-- Gravel -->
+    <material name="Limestone" formula="CaCO3">
+      <D value="2.76" unit="g/cm3"/>
+      <composite n="1" ref="Calcium"/>
+      <composite n="1" ref="Carbon"/>
+      <composite n="3" ref="Oxygen"/>
+    </material>
+    
+    <material name="Steel">
+      <D value="7.8" unit="g/cm3"/>
+      <fraction n="0.7052" ref="Iron"/>
+      <fraction n="0.18" ref="Chromium"/>
+      <fraction n="0.09" ref="Nickel"/>
+      <fraction n="0.016" ref="Manganese"/>
+      <fraction n="0.007" ref="Silicon"/>
+      <fraction n="0.0005" ref="Nitrogen"/>
+      <fraction n="0.0007" ref="Carbon"/>
+      <fraction n="0.00036" ref="Phosphorus"/>
+      <fraction n="0.00024" ref="Sulfur"/>
+      </material>
+    
+    <material name="Gravel">
+      <D value="5.75" unit="g/cm3"/>
+      <fraction n="0.4" ref="Iron"/>
+      <fraction n="0.4" ref="Steel"/>
+      <fraction n="0.2" ref="Limestone"/>
+    </material>
+
+    <!-- Concrete -->
+    <material name="Concrete">
+      <D value="3.56" unit="g/cm3"/>
+      <fraction n="0.000022" ref="Air"/>
+      <fraction n="0.099404" ref="Portland_cement"/>
+      <fraction n="0.044945" ref="Water"/>
+      <fraction n="0.662232" ref="Gravel"/>
+      <fraction n="0.193397" ref="Sand"/>
+    </material>
+</materials>
+
+<!-- ****************************************************** END OF MATERIALS ****************************************************************** -->
+
+<!-- ******************************************** Define parts of the setup (ABSTRACT VOLUMES)  ************************************************-->
+<!-- NO MORE NUMBERS HERE! -->
+<solids>
+  <!-- World -->
+  <box name="WorldBox" x="100000.0" z="10000.0" y="100000.0" lunit="mm"/>
+
+  <!-- PbCastle and Cu Support Plate -->
+  <box name="PbCastleWhole"       x="PbCastle_Length_in_X"            y="PbCastle_Length_in_Y"            z="PbCastle_Total_Height" lunit="mm"/>
+  <box name="PbCastle_MiddleHole" x="PbCastle_MiddleHole_Length_in_X" y="PbCastle_MiddleHole_Length_in_Y" z="PbCastle_MiddleHole_Height" lunit="mm"/>
+  <subtraction name="Box_PbCastle">
+    <first ref="PbCastleWhole"/> <second ref="PbCastle_MiddleHole"/>
+    <positionref ref="Shift_PbCastle_MiddleHole"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <box name="CuSupportPlate" x="PbCastle_Length_in_X" y="PbCastle_Length_in_Y" z="PbCastle_CuSupportPlate_Height" lunit="mm"/>
+
+  <!-- WoodPlank 2 pieces to be put into World Volume Box_Table_WoodPlank and Box_Table_BottomWoodPlank -->
+  <box name="Box_Table_WoodPlank" x="Table_Length_in_X" y="Table_Length_in_Y" z="Table_WoodPlank_Height" lunit="mm"/>
+  <box name="Box_Table_CutPart"   x="Table_Al_Width"    y="Table_Al_Width"    z="Table_WoodPlank_Height" lunit="mm"/>
+  <subtraction name="Box_Table_WoodPlank1">
+    <first ref="Box_Table_WoodPlank"/> <second ref="Box_Table_CutPart"/>
+    <positionref ref="Shift_BottomWoodPlank_Cut1"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Box_Table_WoodPlank2">
+    <first ref="Box_Table_WoodPlank1"/> <second ref="Box_Table_CutPart"/>
+    <positionref ref="Shift_BottomWoodPlank_Cut2"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Box_Table_WoodPlank3">
+    <first ref="Box_Table_WoodPlank2"/> <second ref="Box_Table_CutPart"/>
+    <positionref ref="Shift_BottomWoodPlank_Cut3"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Box_Table_BottomWoodPlank">
+    <first ref="Box_Table_WoodPlank3"/> <second ref="Box_Table_CutPart"/>
+    <positionref ref="Shift_BottomWoodPlank_Cut4"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+
+
+  <!-- CryoCooler Outside PbCastle -->
+  <box name="Box_CryoCooler" x="CryoCooler_Length_in_X" y="CryoCooler_Length_in_Y" z="CryoCooler_Height" lunit="mm"/>
+
+ <!-- WaterTank and Water -->
+ <box name="WaterTankWhole" x="WaterTank_Length_in_X" y="WaterTank_Length_in_Y" z="WaterTank_Height" lunit="mm"/>
+ <box name="WaterTank_MiddleHole" x="WaterTank_MiddleHole_Length_in_X" y="WaterTank_MiddleHole_Length_in_Y" z="WaterTank_MiddleHole_Height" lunit="mm"/>
+  <subtraction name="WaterTank">
+    <first ref="WaterTankWhole"/> <second ref="WaterTank_MiddleHole"/>
+    <positionref ref="center"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+ <box name="WaterVolumeWhole" x="WaterVolume_Length_in_X" y="WaterVolume_Length_in_Y" z="WaterVolume_Height" lunit="mm"/>
+ <box name="WaterVolume_MiddleHole" x="WaterVolume_MiddleHole_Length_in_X" y="WaterVolume_MiddleHole_Length_in_Y" z="WaterVolume_MiddleHole_Height" lunit="mm"/>
+  <subtraction name="Box_WaterVolume">
+    <first ref="WaterVolumeWhole"/> <second ref="WaterVolume_MiddleHole"/>
+    <positionref ref="center"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+
+
+  <!-- XtRa Endcap, common for A and B -->
+  <tube name="TUBE_XtRa_EndCap"       z="XtRa_EndCap_Length"       rmax="XtRa_EndCap_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_EndCapVacuum" z="XtRa_EndCapVacuum_Length" rmax="XtRa_EndCapVacuum_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_EndCap_EntranceWindow"   z="XtRa_EndCap_EntranceWindow_Thickness" rmax="XtRa_EndCap_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_OutColdFinger"   z="XtRa_OutColdFinger_Length" rmax="XtRa_OutColdFinger_OuterRadius" rmin="XtRa_OutColdFinger_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_OutCuColdFinger" z="XtRa_OutColdFinger_Length" rmax="XtRa_OutCuColdFinger_Radius" deltaphi="TWOPI" lunit="mm"/>
+
+  <!-- Aluminum Holder and Cu ColdFinger inside EndcapVacuum, common for A and B -->
+  <tube name="TUBE_XtRa_EndCap_AlHolder1"  z="XtRa_EndCap_AlHolder1_Length" rmax="XtRa_EndCap_AlHolder1_OuterRadius" rmin="XtRa_EndCap_AlHolder1_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_EndCap_AlHolder2"  z="XtRa_EndCap_AlHolder2_Length" rmax="XtRa_EndCap_AlHolder2_OuterRadius" rmin="XtRa_EndCap_AlHolder2_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_EndCap_AlHolder3"  z="XtRa_EndCap_AlHolder3_Length" rmax="XtRa_EndCap_AlHolder3_OuterRadius" rmin="XtRa_EndCap_AlHolder3_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRa_EndCap_ColdFinger" z="XtRa_EndCap_ColdFinger_Length" rmax="XtRa_EndCap_ColdFinger_OuterRadius"  deltaphi="TWOPI" lunit="mm"/>
+
+  <!-- XtRaA and B Crystal, CrystalHole, DeadLayer -->
+  <tube name="TUBE_XtRaA_SensitiveCrystal_Whole"  z="XtRaA_SensitiveCrystal_Length" rmax="XtRaA_SensitiveCrystal_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRaB_SensitiveCrystal_Whole"  z="XtRaB_SensitiveCrystal_Length" rmax="XtRaB_SensitiveCrystal_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRaA_SensitiveCrystal_InnerHole" z="XtRaA_SensitiveCrystal_InnerHole_Length" rmax="XtRaA_SensitiveCrystal_InnerHole_Radius" deltaphi="TWOPI" lunit="mm"/>
+  <tube name="TUBE_XtRaB_SensitiveCrystal_InnerHole" z="XtRaB_SensitiveCrystal_InnerHole_Length" rmax="XtRaB_SensitiveCrystal_InnerHole_Radius" deltaphi="TWOPI" lunit="mm"/>
+
+  <subtraction name="TUBE_XtRaA_SensitiveCrystal">
+    <first ref="TUBE_XtRaA_SensitiveCrystal_Whole"/> <second ref="TUBE_XtRaA_SensitiveCrystal_InnerHole"/>
+    <positionref ref="Shift_XtRaA_SensitiveCrystal_InnerHole"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="TUBE_XtRaB_SensitiveCrystal">
+    <first ref="TUBE_XtRaB_SensitiveCrystal_Whole"/> <second ref="TUBE_XtRaB_SensitiveCrystal_InnerHole"/>
+    <positionref ref="Shift_XtRaB_SensitiveCrystal_InnerHole"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+ 
+   <!-- XtRaA and B BarrelDeadLayer and EndPlateDeadLayer -->
+  <tube  name="TUBE_XtRaA_Crystal_BarrelDeadLayer" z="XtRaA_Crystal_BarrelDeadLayer_Length" rmax="XtRaA_Crystal_BarrelDeadLayer_OuterRadius" rmin="XtRaA_Crystal_BarrelDeadLayer_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube  name="TUBE_XtRaB_Crystal_BarrelDeadLayer" z="XtRaB_Crystal_BarrelDeadLayer_Length" rmax="XtRaB_Crystal_BarrelDeadLayer_OuterRadius" rmin="XtRaB_Crystal_BarrelDeadLayer_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube  name="TUBE_XtRaA_Crystal_EndPlateDeadLayer"  z="XtRaA_Crystal_EndPlateDeadLayer_Length" rmax="XtRaA_Crystal_EndPlateDeadLayer_OuterRadius" rmin="XtRaA_Crystal_EndPlateDeadLayer_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+  <tube  name="TUBE_XtRaB_Crystal_EndPlateDeadLayer"  z="XtRaB_Crystal_EndPlateDeadLayer_Length" rmax="XtRaB_Crystal_EndPlateDeadLayer_OuterRadius" rmin="XtRaB_Crystal_EndPlateDeadLayer_InnerRadius" deltaphi="TWOPI" lunit="mm"/>
+
+ <!-- Scintillators -->
+  <!-- big top and big bottom -->
+ <box name="Box_Scintillator_Big_Standard"       x="750.0" y="650.0" z="50.0"  lunit="mm"/>
+  <!-- small 1 2 3 4 -->
+ <box name="Box_Scintillator_Small_Standard"     x="200.0" y="650.0" z="50.0"  lunit="mm"/>
+  <!-- bigside 1 2, no rotation -->
+ <box name="Box_Scintillator_BigSide_Standard"   x="50.0"  y="770.0" z="500.0" lunit="mm"/>
+  <!-- smallside 1 2, no rotation -->
+ <box name="Box_Scintillator_SmallSide_Standard" x="250.0" y="50.0"  z="500.0" lunit="mm"/>
+  <!-- bottomside 1 2, no rotation -->
+ <box name="Box_Scintillator_BottomSide_Standard" x="250.0" y="850.0" z="50.0"  lunit="mm"/>
+  <!-- bottom front and back, no rotation -->
+ <box name="Box_Scintillator_BottomFB_Standard"   x="250.0" y="650.0" z="50.0"  lunit="mm"/>
+
+ <!-- 8080 Al Profile for the table -->
+  <box name="AlBottom1" x="1000.0" z="80.0" y="1500.0" lunit="mm"/>
+  <box name="AlBottomHole" x="380.0" z="80.0" y="630.0" lunit="mm"/>
+  <box name="AlLeg" x="80.0" z="397.0" y="80.0" lunit="mm"/>
+  <box name="AlLegDown" x="80.0" z="321" y="80.0" lunit="mm"/>
+
+  <subtraction name="Sub1AlBottom">
+    <first ref="AlBottom1"/> <second ref="AlBottomHole"/>
+    <positionref ref="shiftAlBottomHole1"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Sub2AlBottom">
+    <first ref="Sub1AlBottom"/> <second ref="AlBottomHole"/>
+    <positionref ref="shiftAlBottomHole2"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Sub3AlBottom">
+    <first ref="Sub2AlBottom"/> <second ref="AlBottomHole"/>
+    <positionref ref="shiftAlBottomHole3"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Sub4AlBottom">
+    <first ref="Sub3AlBottom"/> <second ref="AlBottomHole"/>
+    <positionref ref="shiftAlBottomHole4"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+
+ <!-- Al Profile 40x80 -->
+  <box name="AluminiumHorizontalAboveTop" x="1090" z="40.0" y="80.0" lunit="mm"/>
+  <box name="AluminiumLongVertical" x="40" z="2500.0" y="80.0" lunit="mm"/>
+  <box name="AluminiumSideHorizontal" x="40" z="80" y="950" lunit="mm"/>
+  <box name="AluminiumFrontBackHorizontal" x="375" z="80" y="40" lunit="mm"/>
+  <box name="AluminiumHorizontalBelowLong" x="1090" z="40.0" y="80.0" lunit="mm"/>
+  <box name="AluminiumHorizontalBelowMedium" x="1000" z="40.0" y="80.0" lunit="mm"/>
+  <box name="AluminiumHorizontalBelowMediumSmall" x="80" z="40.0" y="396" lunit="mm"/>
+
+  <!-- Room -->
+  <box name="RoomBigBox" x="6600.0" y="5700.0" z="4200.0" lunit="mm"/>
+  <box name="RoomSmallBox" x="5900.0" y="5000.0" z="3500.0" lunit="mm"/>
+  <box name="RoomDoor" x="1200.0" y="1000.0" z="2000.0" lunit="mm"/>
+  <!-- Prepare Room -->
+  <subtraction name="Room1">
+    <first ref="RoomBigBox"/> <second ref="RoomSmallBox"/>
+    <positionref ref="center"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+  <subtraction name="Room">
+    <first ref="Room1"/> <second ref="RoomDoor"/>
+    <positionref ref="ShiftRoomDoor"/>
+    <rotationref ref="identity"/>
+  </subtraction>
+
+
+
+</solids>  
+<!-- *************************** END OF DETECTOR PART **************************** -->
+
+
+<!-- ************************************************ DEFINITION OF LOGICAL VOLUMES****************************************************** -->
+<structure>
+
+  <!-- Copper Support Plate -->
+  <volume name="LV_CuSupportPlate">
+    <materialref ref="Cu"/>
+    <solidref ref="CuSupportPlate"/>
+  </volume>
+    
+  <!-- Lead Castle -->
+  <volume name="LV_PbCastle">
+    <materialref ref="Pb"/>
+    <solidref ref="Box_PbCastle"/>
+  <!-- Copper Support Plate inside Lead Castle -->
+    <physvol name="PV_CuSupportPlate_in_PbCastle">
+      <volumeref ref="LV_CuSupportPlate"/>
+      <positionref ref="Shift_CuSupportPlate_in_PbCastle"/>
+      <rotationref ref="identity"/>
+    </physvol>
+  </volume>
+
+  <!-- Table WoodPlank -->
+  <volume name="LV_Table_WoodPlank">
+    <materialref ref="Wood"/>
+    <solidref ref="Box_Table_WoodPlank"/>
+    <auxiliary auxtype="Color" auxvalue="Magenta"/>
+  </volume>
+  <volume name="LV_Table_BottomWoodPlank">
+    <materialref ref="Wood"/>
+    <solidref ref="Box_Table_BottomWoodPlank"/>
+    <auxiliary auxtype="Color" auxvalue="Magenta"/>
+  </volume>
+
+
+  <!-- CryoCooler -->
+  <volume name="LV_CryoCooler">
+    <materialref ref="CryoIron"/>
+    <solidref ref="Box_CryoCooler"/>
+    <auxiliary auxtype="Color" auxvalue="Magenta"/>
+  </volume>
+
+  <!-- WaterVolume -->
+  <volume name="LV_WaterVolume">
+    <materialref ref="Water"/>
+    <solidref ref="Box_WaterVolume"/>
+  </volume>
+  <!-- Water Tank -->
+  <volume name="LV_WaterTank">
+    <materialref ref="Plastic"/>
+    <solidref ref="WaterTank"/>
+  <!-- WaterVolume inside WaterTnak -->
+    <physvol name="PV_WaterVolume">
+      <volumeref ref="LV_WaterVolume"/>
+      <positionref ref="center"/>
+      <rotationref ref="identity"/>
+    </physvol>
+  </volume>
+
+
+  <!-- XtRa EndCap common for both A and B -->
+ 
+  <!-- Aluminum holder and Cu ColdFinger inside EndCapVacuum --> 
+  <volume name="LV_XtRa_EndCap_AlHolder1">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_EndCap_AlHolder1"/>
+   <auxiliary auxtype="Color" auxvalue="Black"/>
+  </volume>
+  <volume name="LV_XtRa_EndCap_AlHolder2">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_EndCap_AlHolder2"/>
+   <auxiliary auxtype="Color" auxvalue="Black"/>
+  </volume>
+  <volume name="LV_XtRa_EndCap_AlHolder3">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_EndCap_AlHolder3"/>
+   <auxiliary auxtype="Color" auxvalue="Black"/>
+  </volume>
+  <volume name="LV_XtRa_EndCap_ColdFinger">
+   <materialref ref="Cu"/>
+   <solidref ref="TUBE_XtRa_EndCap_ColdFinger"/>
+   <auxiliary auxtype="Color" auxvalue="Black"/>
+  </volume>
+
+  <!-- XtRaA and XtRaB SensitiveCrystal inside EndCapVacuum -->
+  <volume name="LV_XtRaA_SensitiveCrystal">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaA_SensitiveCrystal"/>
+    <auxiliary auxtype="SensDet" auxvalue="hpge"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+  <volume name="LV_XtRaB_SensitiveCrystal">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaB_SensitiveCrystal"/>
+    <auxiliary auxtype="SensDet" auxvalue="hpge"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+
+  <!-- XtRaA and XtRaB BarrelDeadLayer and EndPlateDeadLayer inside EndCapVacuum -->
+  <volume name="LV_XtRaA_Crystal_BarrelDeadLayer">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaA_Crystal_BarrelDeadLayer"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+  <volume name="LV_XtRaB_Crystal_BarrelDeadLayer">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaB_Crystal_BarrelDeadLayer"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+  <volume name="LV_XtRaA_Crystal_EndPlateDeadLayer">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaA_Crystal_EndPlateDeadLayer"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+  <volume name="LV_XtRaB_Crystal_EndPlateDeadLayer">
+    <materialref ref="Ge"/>
+    <solidref ref="TUBE_XtRaB_Crystal_EndPlateDeadLayer"/>
+    <auxiliary auxtype="Color" auxvalue="Blue"/>
+  </volume>
+
+ <!-- XtRaA EndCapVacuum and its daughter volumes -->
+  <volume name="LV_XtRaA_EndCapVacuum">
+   <materialref ref="Vacuum"/>
+   <solidref ref="TUBE_XtRa_EndCapVacuum"/>
+   <physvol name="PV_XtRaA_EndCap_AlHolder1">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder1"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_EndCap_AlHolder2">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder2"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_EndCap_AlHolder3">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder3"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder3"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_EndCap_ColdFinger">
+      <volumeref ref="LV_XtRa_EndCap_ColdFinger"/>
+      <positionref ref="Shift_XtRa_EndCap_ColdFinger"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_SensitiveCrystal">
+      <volumeref ref="LV_XtRaA_SensitiveCrystal"/>
+      <positionref ref="Shift_XtRaA_SensitiveCrystal"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_Crystal_BarrelDeadLayer">
+      <volumeref ref="LV_XtRaA_Crystal_BarrelDeadLayer"/>
+      <positionref ref="Shift_XtRaA_Crystal_BarrelDeadLayer"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_Crystal_EndPlateDeadLayer">
+      <volumeref ref="LV_XtRaA_Crystal_EndPlateDeadLayer"/>
+      <positionref ref="Shift_XtRaA_Crystal_EndPlateDeadLayer"/>
+      <rotationref ref="identity"/>
+   </physvol>
+  </volume>
+
+ <!-- XtRaB EndCapVacuum and its daughter volumes -->
+  <volume name="LV_XtRaB_EndCapVacuum">
+   <materialref ref="Vacuum"/>
+   <solidref ref="TUBE_XtRa_EndCapVacuum"/>
+   <physvol name="PV_XtRaB_EndCap_AlHolder1">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder1"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_EndCap_AlHolder2">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder2"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_EndCap_AlHolder3">
+      <volumeref ref="LV_XtRa_EndCap_AlHolder3"/>
+      <positionref ref="Shift_XtRa_EndCap_AlHolder3"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_EndCap_ColdFinger">
+      <volumeref ref="LV_XtRa_EndCap_ColdFinger"/>
+      <positionref ref="Shift_XtRa_EndCap_ColdFinger"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_SensitiveCrystal">
+      <volumeref ref="LV_XtRaB_SensitiveCrystal"/>
+      <positionref ref="Shift_XtRaB_SensitiveCrystal"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_Crystal_BarrelDeadLayer">
+      <volumeref ref="LV_XtRaB_Crystal_BarrelDeadLayer"/>
+      <positionref ref="Shift_XtRaB_Crystal_BarrelDeadLayer"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_Crystal_EndPlateDeadLayer">
+      <volumeref ref="LV_XtRaB_Crystal_EndPlateDeadLayer"/>
+      <positionref ref="Shift_XtRaB_Crystal_EndPlateDeadLayer"/>
+      <rotationref ref="identity"/>
+   </physvol>
+  </volume>
+
+ <!-- XtRa A and B EndCap -->
+  <volume name="LV_XtRa_EndCap_EntranceWindow">
+   <materialref ref="Carbon_material"/>
+   <solidref ref="TUBE_XtRa_EndCap_EntranceWindow"/>
+   <auxiliary auxtype="Color" auxvalue="Black"/>
+  </volume>
+
+  <volume name="LV_XtRaA_EndCap">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_EndCap"/>
+   <physvol name="PV_XtRaA_EndCapVacuum">
+      <volumeref ref="LV_XtRaA_EndCapVacuum"/>
+      <positionref ref="center"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaA_EndCap_EntranceWindow">
+      <volumeref ref="LV_XtRa_EndCap_EntranceWindow"/>
+      <positionref ref="Shift_XtRa_EndCap_EntranceWindow"/>
+      <rotationref ref="identity"/>
+   </physvol>
+  </volume>
+
+  <volume name="LV_XtRaB_EndCap">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_EndCap"/>
+   <physvol name="PV_XtRaB_EndCapVacuum">
+      <volumeref ref="LV_XtRaB_EndCapVacuum"/>
+      <positionref ref="center"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_EndCap_EntranceWindow">
+      <volumeref ref="LV_XtRa_EndCap_EntranceWindow"/>
+      <positionref ref="Shift_XtRa_EndCap_EntranceWindow"/>
+      <rotationref ref="identity"/>
+   </physvol>
+  </volume>
+
+
+ <!-- ColdFinger and CuColdFinger outside the Endcap, will be positioned twice -->
+  <volume name="LV_XtRa_OutCuColdFinger">
+   <materialref ref="Cu"/>
+   <solidref ref="TUBE_XtRa_OutCuColdFinger"/>
+   <auxiliary auxtype="Color" auxvalue="Red"/>
+  </volume>
+  <volume name="LV_XtRa_OutColdFinger">
+   <materialref ref="Al"/>
+   <solidref ref="TUBE_XtRa_OutColdFinger"/>
+   <auxiliary auxtype="Color" auxvalue="Red"/>
+  </volume>
+
+
+ <!-- Big Scintillators -->
+<!-- this is stupid, theoretically I only need to define logical volume ONCE, but I donot know how to name physical volumes from the same logical volume -->
+  <volume name="LV_Sensitive_Scint_BigTopBottom_Standard">
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_Big_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="bigscintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+ <!-- Small Scintillators -->
+  <volume name="LV_Sensitive_Scint_Small_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_Small_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="smallscintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+<!-- Big Side Scintillators -->
+  <volume name="LV_Sensitive_Scint_BigSide_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_BigSide_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="sidescintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+<!-- Small Side Scintillators -->
+  <volume name="LV_Sensitive_Scint_SmallSide_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_SmallSide_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="sidescintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+<!-- Bottom Side -->
+  <volume name="LV_Sensitive_Scint_BottomSide_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_BottomSide_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="sidescintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+<!-- Bottom Front Back -->
+  <volume name="LV_Sensitive_Scint_BottomFB_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_BottomFB_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="mediumscintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
+  <!-- Table -->
+   <volume name="AlBottomPhys1">
+     <materialref ref="Al8080Profile"/>
+     <solidref ref="Sub4AlBottom"/>
+   </volume>
+   <volume name="AlLegPhys">
+     <materialref ref="Al8080Profile"/>
+     <solidref ref="AlLeg"/>
+   </volume>
+   <volume name="AlLegDownPhys">
+     <materialref ref="Al8080Profile"/>
+     <solidref ref="AlLegDown"/>
+   </volume>
+
+ <!-- Al Profile 40x80 -->
+   <volume name="AluminiumHorizontalAboveTop_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumHorizontalAboveTop"/>
+   </volume>
+   <volume name="AluminiumLongVertical_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumLongVertical"/>
+   </volume>
+   <volume name="AluminiumSideHorizontal_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumSideHorizontal"/>
+   </volume>
+   <volume name="AluminiumFrontBackHorizontal_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumFrontBackHorizontal"/>
+   </volume>
+   <volume name="AluminiumHorizontalBelowLong_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumHorizontalBelowLong"/>
+   </volume>
+   <volume name="AluminiumHorizontalBelowMedium_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumHorizontalBelowMedium"/>
+   </volume>
+   <volume name="AluminiumHorizontalBelowMediumSmall_Volume">
+     <materialref ref="Al8040Profile"/>
+     <solidref ref="AluminiumHorizontalBelowMediumSmall"/>
+   </volume>
+
+   <!-- Room -->
+   <volume name="RoomPhys">
+     <materialref ref="Concrete"/>
+     <solidref ref="Room"/>
+   </volume>
+
+
+<!-- ************************************************ Insert created volumes into the World (PHYSICAL VOLUMES) ************************************ -->
+
+  <volume name="World">
+    <materialref ref="Air"/>
+    <solidref ref="WorldBox"/>
+
+ <!-- Lead Castle -->
+   <physvol>
+      <volumeref ref="LV_PbCastle"/>
+      <positionref ref="Shift_PbCastle"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+ <!-- Table Wood Plank 2 pieces -->
+   <physvol name="PV_Table_WoodPlank">
+      <volumeref ref="LV_Table_WoodPlank"/>
+      <positionref ref="Shift_Table_WoodPlank"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_Table_BottomWoodPlank">
+      <volumeref ref="LV_Table_BottomWoodPlank"/>
+      <positionref ref="Shift_Table_BottomWoodPlank"/>
+      <rotationref ref="identity"/>
+   </physvol>
+ 
+<!-- CryoCooler -->
+   <physvol name="PV_XtRaA_CryoCooler">
+      <volumeref ref="LV_CryoCooler"/>
+      <positionref ref="Shift_XtRaA_CryoCooler"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol name="PV_XtRaB_CryoCooler">
+      <volumeref ref="LV_CryoCooler"/>
+      <positionref ref="Shift_XtRaB_CryoCooler"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   
+ <!-- Water Tank -->
+   <physvol>
+      <volumeref ref="LV_WaterTank"/>
+      <positionref ref="center"/>
+      <rotationref ref="identity"/>
+   </physvol>
+    <!-- Table -->
+
+  <!-- XtRa EndCap common for both A and B -->
+   <physvol>
+      <volumeref ref="LV_XtRaA_EndCap"/>
+      <positionref ref="Shift_XtRaA_EndCap"/>
+      <rotationref ref="Rotation_XtRaA_rotatebyx"/>
+   </physvol>
+
+   <physvol>
+      <volumeref ref="LV_XtRaB_EndCap"/>
+      <positionref ref="Shift_XtRaB_EndCap"/>
+      <rotationref ref="Rotation_XtRaB_rotatebyx"/>
+   </physvol>
+
+  <!-- OutColdFinger for XtRaA and XtRaB -->
+   <physvol name="PV_XtRaA_OutColdFinger">
+      <volumeref ref="LV_XtRa_OutColdFinger"/>
+      <positionref ref="Shift_XtRaA_OutColdFinger"/>
+      <rotationref ref="Rotation_XtRaA_rotatebyx"/>
+   </physvol>
+   <physvol name="PV_XtRaB_OutColdFinger">
+      <volumeref ref="LV_XtRa_OutColdFinger"/>
+      <positionref ref="Shift_XtRaB_OutColdFinger"/>
+      <rotationref ref="Rotation_XtRaB_rotatebyx"/>
+   </physvol>
+   <physvol name="PV_XtRaA_OutCuColdFinger">
+      <volumeref ref="LV_XtRa_OutCuColdFinger"/>
+      <positionref ref="Shift_XtRaA_OutColdFinger"/>
+      <rotationref ref="Rotation_XtRaA_rotatebyx"/>
+   </physvol>
+   <physvol name="PV_XtRaB_OutCuColdFinger">
+      <volumeref ref="LV_XtRa_OutCuColdFinger"/>
+      <positionref ref="Shift_XtRaB_OutColdFinger"/>
+      <rotationref ref="Rotation_XtRaB_rotatebyx"/>
+   </physvol>
+
+
+   <!-- Scintillators -->
+   <physvol     name="PV_Sensitive_Scint_BigTop">
+      <volumeref ref="LV_Sensitive_Scint_BigTopBottom_Standard"/>
+      <positionref   ref="Shift_Scint_BigTop"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_BigBottom">
+      <volumeref ref="LV_Sensitive_Scint_BigTopBottom_Standard"/>
+      <positionref   ref="Shift_Scint_BigBottom"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_Small1">
+      <volumeref ref="LV_Sensitive_Scint_Small_Standard"/>
+      <positionref   ref="Shift_Scint_Small1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_Small2">
+      <volumeref ref="LV_Sensitive_Scint_Small_Standard"/>
+      <positionref   ref="Shift_Scint_Small2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_Small3">
+      <volumeref ref="LV_Sensitive_Scint_Small_Standard"/>
+      <positionref   ref="Shift_Scint_Small3"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_Small4">
+      <volumeref ref="LV_Sensitive_Scint_Small_Standard"/>
+      <positionref   ref="Shift_Scint_Small4"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_BigSide1">
+      <volumeref ref="LV_Sensitive_Scint_BigSide_Standard"/>
+      <positionref   ref="Shift_Scint_BigSide1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_BigSide2">
+      <volumeref ref="LV_Sensitive_Scint_BigSide_Standard"/>
+      <positionref   ref="Shift_Scint_BigSide2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_SmallSide1">
+      <volumeref ref="LV_Sensitive_Scint_SmallSide_Standard"/>
+      <positionref   ref="Shift_Scint_SmallSide1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_SmallSide2">
+      <volumeref ref="LV_Sensitive_Scint_SmallSide_Standard"/>
+      <positionref   ref="Shift_Scint_SmallSide2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_SmallSide3">
+      <volumeref ref="LV_Sensitive_Scint_SmallSide_Standard"/>
+      <positionref   ref="Shift_Scint_SmallSide3"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_SmallSide4">
+      <volumeref ref="LV_Sensitive_Scint_SmallSide_Standard"/>
+      <positionref   ref="Shift_Scint_SmallSide4"/>
+      <rotationref ref="identity"/>
+   </physvol>
+ 
+   <physvol     name="PV_Sensitive_Scint_BottomSide1">
+      <volumeref ref="LV_Sensitive_Scint_BottomSide_Standard"/>
+      <positionref   ref="Shift_Scint_BottomSide1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_BottomSide2">
+      <volumeref ref="LV_Sensitive_Scint_BottomSide_Standard"/>
+      <positionref   ref="Shift_Scint_BottomSide2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_BottomBack">
+      <volumeref ref="LV_Sensitive_Scint_BottomFB_Standard"/>
+      <positionref   ref="Shift_Scint_BottomBack"/>
+      <rotationref ref="identity"/>
+   </physvol>
+   <physvol     name="PV_Sensitive_Scint_BottomFront">
+      <volumeref ref="LV_Sensitive_Scint_BottomFB_Standard"/>
+      <positionref   ref="Shift_Scint_BottomFront"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+  <!-- Table Al Profile 8080 -->
+      <physvol name="PV_Table_AlProfileSupport_firstlayer">
+        <volumeref ref="AlBottomPhys1"/>
+        <positionref ref="shiftAlBottom1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_AlProfileSupport_secondlayer">
+        <volumeref ref="AlBottomPhys1"/>
+        <positionref ref="shiftAlBottom2"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_MiddleLeg1">
+        <volumeref ref="AlLegPhys"/>
+        <positionref ref="shiftAlLeg1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_MiddleLeg2">
+        <volumeref ref="AlLegPhys"/>
+        <positionref ref="shiftAlLeg2"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_MiddleLeg3">
+        <volumeref ref="AlLegPhys"/>
+        <positionref ref="shiftAlLeg3"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_MiddleLeg4">
+        <volumeref ref="AlLegPhys"/>
+        <positionref ref="shiftAlLeg4"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownLF">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownLF"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownLF1">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownLF1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownRF">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownRF"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownRF1">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownRF1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownLM">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownLM"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownRM">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownRM"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownLB">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownLB"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownLB1">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownLB1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownRB">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownRB"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_Table_LowerLeg_DownRB1">
+        <volumeref ref="AlLegDownPhys"/>
+        <positionref ref="shiftAlLegDownRB1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+  
+   <!-- Al 8040 Profile -->
+
+      <physvol name="PV_AluminiumHorizontalBelowSmall3Small4_First">
+        <volumeref ref="AluminiumHorizontalAboveTop_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowSmall3Small4_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowSmall3Small4_Second">
+        <volumeref ref="AluminiumHorizontalAboveTop_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowSmall3Small4_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="AluminiumHorizontalBelowSmall1Small2_First">
+        <volumeref ref="AluminiumHorizontalAboveTop_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowSmall1Small2_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="AluminiumHorizontalBelowSmall1Small2_Second">
+        <volumeref ref="AluminiumHorizontalAboveTop_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowSmall1Small2_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumLongVertical_First">
+        <volumeref ref="AluminiumLongVertical_Volume"/>
+        <positionref ref="shiftAluminiumLongVertical_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumLongVertical_Second">
+        <volumeref ref="AluminiumLongVertical_Volume"/>
+        <positionref ref="shiftAluminiumLongVertical_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumLongVertical_Third">
+        <volumeref ref="AluminiumLongVertical_Volume"/>
+        <positionref ref="shiftAluminiumLongVertical_Third"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumLongVertical_Fourth">
+        <volumeref ref="AluminiumLongVertical_Volume"/>
+        <positionref ref="shiftAluminiumLongVertical_Fourth"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumSide_First_Left">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_First_Left"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumSide_Second_Left">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_Second_Left"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumSide_Third_Left">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_Third_Left"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumSide_First_Right">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_First_Right"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumSide_Second_Right">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_Second_Right"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumSide_Third_Right">
+        <volumeref ref="AluminiumSideHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumSide_Third_Right"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumFront_Left_First">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumFront_Left_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumFront_Left_Second">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumFront_Left_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumFront_Right_First">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumFront_Right_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumFront_Right_Second">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumFront_Right_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumBack_Left_First">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumBack_Left_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumBack_Left_Second">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumBack_Left_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumBack_Right_First">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumBack_Right_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumBack_Right_Second">
+        <volumeref ref="AluminiumFrontBackHorizontal_Volume"/>
+        <positionref ref="shiftAluminiumBack_Right_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumHorizontalBelowLong_First">
+        <volumeref ref="AluminiumHorizontalBelowLong_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowLong_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowLong_Second">
+        <volumeref ref="AluminiumHorizontalBelowLong_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowLong_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowLong_Third">
+        <volumeref ref="AluminiumHorizontalBelowLong_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowLong_Third"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowLong_Forth">
+        <volumeref ref="AluminiumHorizontalBelowLong_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowLong_Fourth"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumHorizontalBelowMedium_First">
+        <volumeref ref="AluminiumHorizontalBelowMedium_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowMedium_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowMedium_Second">
+        <volumeref ref="AluminiumHorizontalBelowMedium_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowMedium_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+      <physvol name="PV_AluminiumHorizontalBelowMediumSmall_First">
+        <volumeref ref="AluminiumHorizontalBelowMediumSmall_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowMediumSmall_First"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_AluminiumHorizontalBelowMediumSmall_Second">
+        <volumeref ref="AluminiumHorizontalBelowMediumSmall_Volume"/>
+        <positionref ref="shiftAluminiumHorizontalBelowMediumSmall_Second"/>
+        <rotationref ref="identity"/>
+      </physvol>
+
+    <!-- *************************** DATA SPHERE **************************** -->
+ 
+  <!--
+    <physvol>
+      <volumeref ref="NewRun5DataSpherePhys"/>
+      <positionref ref="shift_NewRun5DataSphere"/>
+      <rotationref ref="identity"/>
+    </physvol>
+  -->
+    <!-- concrete room -->
+    <physvol name="PV_ConcreteRoom">
+             <volumeref ref="RoomPhys"/>
+             <positionref ref="ShiftRoom"/>
+             <rotationref ref="identity"/>
+    </physvol>
+
+  </volume>
+</structure>
+
+
+<!-- Visualize the World -->
+<setup name="Default" version="1.0">
+  <world ref="World"/>
+</setup>
+
+
+
+</gdml>

@@ -1,0 +1,26 @@
+
+/*
+commands to visualized Minidex Geometry in ROOT
+*/
+
+TGeoManager::Import("GDML_RunV_WithRoom.gdml");
+
+
+TGeoManager::Import("MINIDEX_GDML_RunV.gdml");
+gGeoManager->GetTopVolume()->Draw("ogl");
+
+gGeoManager->GetVolume("WaterTankPhys")->Draw("ogl");
+gGeoManager->GetVolume("NO_SENS_ANY_MORE_WaterSideLeft")->Draw("ogl");
+
+/*
+check that the FLUKA input vertex needs to be moved up by 7.5cm 2022.03.29
+test sphere center from 380 + 75 to 455mm,
+no overlap with top scintillators, good!
+*/
+cd /remote/ceph2/user/x/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/check_tonis_input_change
+
+root
+TGeoManager::Import("MINIDEX_GDML_RunV_Phase2_withoutRoom_TestShell.gdml");
+gGeoManager->GetTopVolume()->Draw("ogl");
+gGeoManager->CheckOverlaps();
+gGeoManager->GetListOfOverlaps()->Print();

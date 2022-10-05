@@ -1,0 +1,24 @@
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+
+#/HPGe/det/GDMLsourceFile /Users/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/GDML_RunV_WithRoom_Run5_SpecialForGeant4.gdml
+/HPGe/det/GDMLsourceFile /Users/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/play_with_geometry/MINIDEX_GDML_RunV.gdml
+
+/run/initialize
+
+/xe/gun/type  Volume
+/xe/gun/shape Box
+/xe/gun/halfx 20.0 cm
+/xe/gun/halfy 20.0 cm
+/xe/gun/halfz 30.0 cm
+/xe/gun/center 0.0 0.0 0.0 mm
+/xe/gun/confine PV_WaterVolume
+#/xe/gun/confine WaterTankPhys_PV
+
+/xe/gun/energy 0 keV
+/xe/gun/particle ion
+/xe/gun/ion 27 60 0 0
+

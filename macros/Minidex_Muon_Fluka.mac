@@ -1,0 +1,13 @@
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+/HPGe/det/GDMLsourceFile /remote/ceph/user/x/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/play_with_geometry/MINIDEX_GDML_RunV.gdml
+
+/run/initialize
+
+/xe/gun/useFluka true
+#/xe/gun/FlukaInputFileName /Users/xliu/work/minidex/minidex_gdml_simulation/fluka_input/a3rd.b-9_ud6b_c_oo04-376106
+/xe/gun/FlukaInputFileName /remote/ceph/user/x/xliu/work/minidex/minidex_gdml_simulation/fluka_input/a3rd.b-952867_ud3b_f_oo05-304759
+
