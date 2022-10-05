@@ -407,13 +407,13 @@ HPGeParticleSource::GeneratePrimaryVertex(G4Event * evt)
       // set all variables to strange values so u can see if there is a mistake
       fluka_code = 0;
       Geant4_particleName ="";
-      px = -1e6;
-      py = -1e6;
-      pz = -1e6;
-      particle_position_x = -1e6;
-      particle_position_y = -1e6;
-      particle_position_z = -1e6;
-      time_of_individual_particle = -1e6;
+      px = 0.0;
+      py = 0.0;
+      pz = 0.0;
+      particle_position_x = -1.0e6;
+      particle_position_y = -1.0e6;
+      particle_position_z = -1.0e6;
+      time_of_individual_particle =  1.0e6;
 
 	  // 2022.06.14 runV and afterwards, the experiment was rotated by 90 degrees,
       // now FLUKA and Geant4 have the same x-y-z orientation, 
@@ -426,7 +426,7 @@ HPGeParticleSource::GeneratePrimaryVertex(G4Event * evt)
 
       // if it is empty we do not know the particle and so it will not be added to the starting vertices 
       // 2022.08.05 increase secondary particles from 100 to 500
-      if(!Geant4_particleName.empty() && i<=300)
+      if(!Geant4_particleName.empty() && i<=500)
       {
         // fluka uses as standard: s, GeV and cm !!!!!!!!!!!!!!!!!!!! 
         // so this means that the input of toni has this units and therefore need here to be put in as this units
