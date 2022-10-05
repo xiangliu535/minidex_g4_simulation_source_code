@@ -11,3 +11,8 @@ git push -u origin main
 to pull:
 
  git clone git@github.com:xiangliu535/minidex_g4_simulation_source_code.git
+
+cenv legend-base
+cenv legend-old
+. /opt/geant4/share/Geant4-10.5.1/geant4make/geant4make.sh 
+
