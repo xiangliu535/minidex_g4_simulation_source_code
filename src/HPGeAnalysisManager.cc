@@ -34,8 +34,10 @@ HPGeAnalysisManager::HPGeAnalysisManager(HPGePrimaryGeneratorAction *pPrimaryGen
 
 	m_pEventData = new HPGeEventData();
 
-    NeedTrajectory = kFALSE;
-    NeedTrajectoryPoint = kFALSE;
+    //NeedTrajectory = kFALSE;
+    //NeedTrajectoryPoint = kFALSE;
+    NeedTrajectory = kTRUE;
+    NeedTrajectoryPoint = kTRUE;
 }
 
 HPGeAnalysisManager::~HPGeAnalysisManager()
@@ -279,7 +281,10 @@ HPGeAnalysisManager::FillHitsToNtuple(const G4Event *pEvent)
     for (G4int i=0; i<pHPGeHitsCollection->entries(); i++) {
 		HPGeHPGeHit *pHit = (*pHPGeHitsCollection)[i];
         m_pEventData->hits_tote += (pHit->GetEnergyDeposited()/keV);
-      if (pHit->GetEnergyDeposited()>0.001) {  // save only hits with positive deposited energy above 1eV
+      if (pHit->GetEnergyDeposited()>0.0) {  // save only hits with positive deposited energy above 1eV
+      //if (  pHit->GetEnergyDeposited()>0.0
+      //    &&pHit->GetTime()/ns>1.0e+9      ) {  // save only hits deposited within 1s (this function is applied already in HPGeSensitiveDetector
+      // energy cut of >1keV is already applied in HPGeHPGeSensitiveDetector(), no time cut will be applied
         m_pEventData->hits_edep->push_back(pHit->GetEnergyDeposited()/keV);
         m_pEventData->hits_time->push_back(pHit->GetTime()/ns);
         m_pEventData->hits_xpos->push_back(pHit->GetPosition().x()/mm);
@@ -374,7 +379,7 @@ HPGeAnalysisManager::FillHitsToNtuple(const G4Event *pEvent)
   //if(m_pEventData->number_of_scinevts > 0)
   if(m_pEventData->hits_tote > 500. ) {
     m_pEventData->FindPrimaryMuonTagTypeID();
-    if (m_pEventData->primary_muontag_typeid>=3) m_pTree->Fill();
+    if (m_pEventData->primary_muontag_typeid>=0) m_pTree->Fill();
   }
 
   m_pEventData->Clear();

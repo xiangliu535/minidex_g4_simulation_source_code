@@ -338,7 +338,9 @@ void HPGeEventData::CalculateScintillatorHPGeEnergyAndTime()
    //--> second loop over all hits and sort them according to scintillator or hpge hits
     for (int ihit=0; ihit<hits_totnum; ihit++) {
        // hits with energy eV or below are not processed (in simulation there are many hits with e-05 eV energy) (why???)
-       // if ((*hits_edep)[ihit]<=0.001) continue; // this cut is already applied in HPGeAnalysisManager::FillHitsToNtuple(const G4Event *pEvent)
+       // if ((*hits_edep)[ihit]<=0.001) continue; 
+       // this cut is already applied in HPGeAnalysisManager::FillHitsToNtuple(const G4Event *pEvent),
+       // latest update, this cut is applied in HPGeHPGeSensitiveDetector::ProcessHits(G4Step* pStep, G4TouchableHistory *pHistory)
         index_scintillator=-1;
         index_hpge=-1;
         if      ((*hits_volumename)[ihit].find("Sensitive_Scint_BigTop")     != std::string::npos) index_scintillator=0;

@@ -38,6 +38,11 @@ G4bool HPGeHPGeSensitiveDetector::ProcessHits(G4Step* pStep, G4TouchableHistory 
 {
 	G4double dEnergyDeposited = pStep->GetTotalEnergyDeposit();
 	G4Track *pTrack = pStep->GetTrack();
+        // do not save hits after 1 second,
+        // this cut is dangerous for HPGe energy deposit due to neutron activation, should be removed
+        // Ge72 and Ge74 meta stable states life time at micro-second level, safe to apply time cuts
+        if (pTrack->GetGlobalTime()/ns > 1.0e+9) return true;
+        if (dEnergyDeposited/keV < 0.001)        return true; // do not save hits with energy below 1eV
 
 	HPGeHPGeHit* pHit = new HPGeHPGeHit();
 
