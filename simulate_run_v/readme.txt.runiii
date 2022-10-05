@@ -1,0 +1,43 @@
+command to submit jobs is
+parallel-standard-slurm ./FIRST_try_simulation_oli.sh Muon_capture /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours {} ::: Filenamen
+
+parallel-standard-slurm ./simulate_minidex_run_iii.sh RUN_III /afs/ipp-garching.mpg.de/home/x/xliu/work/minidex/minidex_simulation_gemmx/input_data 1 {} ::: a5th.a-23_udCb_j_oo03-375896
+
+
+to really simulate for RUN III first round
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours 1 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours/a3rd*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours 1 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours/a6th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours 1 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours/a4th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours 1 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours/a7th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours 1 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours/a5th*
+
+
+second round
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours 2 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours/a3rd*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours 2 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours/a6th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours 2 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours/a4th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours 2 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours/a7th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours 2 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours/a5th*
+
+third round
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours 3 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours/a3rd*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours 3 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours/a6th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours 3 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours/a4th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours 3 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours/a7th*
+parallel-standard-slurm './simulate_minidex_run_iii.sh RUN_III /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours 3 {}' ::: /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours/a5th*
+
+and commands to check status
+
+squeue -j job_ID
+squeue -u xliu
+squeue -j job_ID --start
+
+------
+old input files
+------
+/ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-490-hours
+/ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-515-hours
+/ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-516-hours
+/ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours
+/ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours
+
