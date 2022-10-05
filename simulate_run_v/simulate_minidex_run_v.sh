@@ -64,7 +64,7 @@ cat > ${macname} <<!
 /event/verbose 0
 /tracking/verbose 0
 
-/HPGe/det/GDMLsourceFile /afs/ipp-garching.mpg.de/home/x/xliu/work/minidex/minidex_gdml_simulation/gdml_geometry/RunV_geometry/MINIDEX_GDML_RunV_Phase2.gdml
+/HPGe/det/GDMLsourceFile /afs/ipp-garching.mpg.de/home/x/xliu/work/minidex/minidex_g4_simulation_source_code/gdml_geometry/RunV_geometry/MINIDEX_GDML_RunV_Phase2.gdml
 
 /run/initialize
 
