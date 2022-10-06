@@ -426,7 +426,7 @@ HPGeParticleSource::GeneratePrimaryVertex(G4Event * evt)
 
       // if it is empty we do not know the particle and so it will not be added to the starting vertices 
       // 2022.08.05 increase secondary particles from 100 to 500
-      if(!Geant4_particleName.empty() && i<=500)
+      if(!Geant4_particleName.empty() && i<=300)
       {
         // fluka uses as standard: s, GeV and cm !!!!!!!!!!!!!!!!!!!! 
         // so this means that the input of toni has this units and therefore need here to be put in as this units
