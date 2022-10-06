@@ -34,10 +34,10 @@ HPGeAnalysisManager::HPGeAnalysisManager(HPGePrimaryGeneratorAction *pPrimaryGen
 
 	m_pEventData = new HPGeEventData();
 
-    //NeedTrajectory = kFALSE;
-    //NeedTrajectoryPoint = kFALSE;
-    NeedTrajectory = kTRUE;
-    NeedTrajectoryPoint = kTRUE;
+    NeedTrajectory = kFALSE;
+    NeedTrajectoryPoint = kFALSE;
+    //NeedTrajectory = kTRUE;
+    //NeedTrajectoryPoint = kTRUE;
 }
 
 HPGeAnalysisManager::~HPGeAnalysisManager()

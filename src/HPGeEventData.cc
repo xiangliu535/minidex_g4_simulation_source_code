@@ -560,23 +560,17 @@ void HPGeEventData::FindPrimaryMuonTagTypeID()
           &&Muon_E[13]>muontag_ethreshold )  primary_muontag_typeid=4;
     //---> muoncapture-13
     //---> 2022.09.26, for 13-capture tag, no cuts on small 2 and 4, same for 24-capture tag
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[2]>muontag_ethreshold && Muon_E[4]>muontag_ethreshold ){
-         all_rest_scint_less_than_eveto=kTRUE;
-         for (int icha=0; icha<16; icha++) {  // here Extra1(16) and Extra2(17) are not included in the veto
-           if (icha!=0 && icha!=2 && icha!=3 && icha!=4 && icha!=5) {
-             if (Muon_E[icha]>muontag_evetothreshold) all_rest_scint_less_than_eveto=kFALSE;
-           }
-         }
-         if (all_rest_scint_less_than_eveto) primary_muontag_typeid=5;
-       }
-    //---> muoncapture-24
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[3]>muontag_ethreshold && Muon_E[5]>muontag_ethreshold ){
          all_rest_scint_less_than_eveto=kTRUE;
          for (int icha=0; icha<16; icha++) {
            if (icha!=0 && icha!=2 && icha!=3 && icha!=4 && icha!=5) {
              if (Muon_E[icha]>muontag_evetothreshold) all_rest_scint_less_than_eveto=kFALSE;
            }
          }
+       if (    Muon_E[0]>muontag_ethreshold && Muon_E[2]>muontag_ethreshold && Muon_E[4]>muontag_ethreshold ){
+         if (all_rest_scint_less_than_eveto) primary_muontag_typeid=5;
+       }
+    //---> muoncapture-24
+       if (    Muon_E[0]>muontag_ethreshold && Muon_E[3]>muontag_ethreshold && Muon_E[5]>muontag_ethreshold ){
          if (all_rest_scint_less_than_eveto) primary_muontag_typeid=6;
        }
     //---> index
