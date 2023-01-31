@@ -243,6 +243,12 @@
    <position name="Shift_Scint_SmallSide3" x="Scint_SmallSide13_Xshift" y="Scint_SmallSide34_Yshift" z="Scint_Side_Zshift" unit="mm"/>
    <position name="Shift_Scint_SmallSide4" x="Scint_SmallSide24_Xshift" y="Scint_SmallSide34_Yshift" z="Scint_Side_Zshift" unit="mm"/>
 
+   <variable name="Scint_Extra_Zshift" value="Scint_BigTop_Zshift + Gap_Between_Scints + Scint_Thickness"/>
+   <variable name="Scint_Extra_Xshift" value="50.0"/> <!-- x shift = 750.0/2.0-650.0/2.0 = 50.0 -->
+   <variable name="Scint_Extra_Yshift" value="200.0"/> <!-- y shift = 650.0/2.0-250.0/2.0 = 200.0, extra1 +y, extra2 -y -->
+   <position name="Shift_Scint_Extra1" x="50.0" y="200.0"  z="Scint_Extra_Zshift" unit="mm"/>
+   <position name="Shift_Scint_Extra2" x="50.0" y="-200.0" z="Scint_Extra_Zshift" unit="mm"/>
+
    <!-- Table Frames and Legs 8080 Al Profile-->
    <!-- the Table has size 1000x1500 , the bottom Al Support Profile is parameterized as one 1000x1500x80 with 4 holes subtracted, each hole x=380 y=630-->
     <position name="shiftAlBottomHole1" x="230.0" z="0.0" y="-355.0" unit="mm"/>
@@ -649,6 +655,8 @@
  <box name="Box_Scintillator_BottomSide_Standard" x="250.0" y="850.0" z="50.0"  lunit="mm"/>
   <!-- bottom front and back, no rotation -->
  <box name="Box_Scintillator_BottomFB_Standard"   x="400.0" y="650.0" z="50.0"  lunit="mm"/>
+  <!-- extra 1 and 2 -->
+ <box name="Box_Scintillator_Extra_Standard"   x="650.0" y="250.0" z="50.0"  lunit="mm"/>
 
  <!-- 8080 Al Profile for the table -->
   <box name="AlBottom1" x="1000.0" z="80.0" y="1500.0" lunit="mm"/>
@@ -1009,6 +1017,14 @@
     <auxiliary auxtype="Color" auxvalue="Green"/>
   </volume>
 
+<!-- Extra 1 and 2 on top of BigTop -->
+  <volume name="LV_Sensitive_Scint_Extra_Standard"> 
+    <materialref ref="Polyvinyltoluene"/>
+    <solidref ref="Box_Scintillator_Extra_Standard"/>
+    <auxiliary auxtype="SensDet" auxvalue="mediumscintillator"/>
+    <auxiliary auxtype="Color" auxvalue="Green"/>
+  </volume>
+
   <!-- Table -->
    <volume name="AlBottomPhys1">
      <materialref ref="Al8080Profile"/>
@@ -1228,6 +1244,19 @@
       <positionref   ref="Shift_Scint_BottomFront"/>
       <rotationref ref="identity"/>
    </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_Extra1">
+      <volumeref ref="LV_Sensitive_Scint_Extra_Standard"/>
+      <positionref   ref="Shift_Scint_Extra1"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
+   <physvol     name="PV_Sensitive_Scint_Extra2">
+      <volumeref ref="LV_Sensitive_Scint_Extra_Standard"/>
+      <positionref   ref="Shift_Scint_Extra2"/>
+      <rotationref ref="identity"/>
+   </physvol>
+
 
   <!-- Table Al Profile 8080 -->
       <physvol name="PV_Table_AlProfileSupport_firstlayer">
