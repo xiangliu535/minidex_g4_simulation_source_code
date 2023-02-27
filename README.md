@@ -18,3 +18,18 @@ cenv legend-base
 cenv legend-old
 . /opt/geant4/share/Geant4-10.5.1/geant4make/geant4make.sh 
 
+
+--------------------------
+procedure to add new key to github
+--------------------------
+on my own computer
+
+ssh-keygen -t ed25519 -C "xliu@mpp.mpg.de"
+eval "$(ssh-agent -s)"
+
+xliu@legend114:/remote/ceph2/user/x/xliu/work/minidex>ssh-add ~/.ssh/id_ed25519
+Enter passphrase for /home/iwsatlas1/xliu/.ssh/id_ed25519:
+Identity added: /home/iwsatlas1/xliu/.ssh/id_ed25519 (xliu@mpp.mpg.de)
+
+then on github webpage, add new ssh key
+
