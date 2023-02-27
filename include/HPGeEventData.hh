@@ -60,12 +60,27 @@ ProtonInelastic         42
 TritonInelastic         43
 
 update 2022.09.22, to save hpgeevt and scinevt, at least one scintillator (HPGe) must have energy above 500keV.
+
+update 2023.02.11, in order to increase MC statistics, do not save hpgeevt and scinevt, just fill histograms
+
+update 2023.02.13, use the same coding as in data to calculate primary muon tag,
+                   get a list of primary tags if multiple exist, choose the earliest-in-time as the primary tag,
+                   also apply plus-minus 1ms time-overlap cut, 
 */
 
 #include <string>
 #include <vector>
 #include <globals.hh>
 #include <TMath.h>
+#include "TSystem.h"
+#include "TROOT.h"
+#include "TFile.h"
+#include "TCanvas.h"
+#include "TTree.h"
+#include "TH1F.h"
+#include "TH1D.h"
+#include "TH2D.h"
+#include "TF1.h"
 
 
 using std::string;
@@ -141,6 +156,17 @@ public:
   vector<vector<int>*>    *scinevt_id;
   int primary_muontag_typeid;
   int primary_muontag_index;
+  //vector<int> *vec_primary_muontag_typeid; // two temporary vectors, defined only in Function FindPrimaryMuonTagTypeID()
+  //vector<int> *vec_primary_muontag_index;
+   bool big_top_above_energy_threshold;
+   bool big_bottom_above_energy_threshold;
+   bool small_1_above_energy_threshold;
+   bool small_2_above_energy_threshold;
+   bool small_3_above_energy_threshold;
+   bool small_4_above_energy_threshold;
+   bool bottom_side1_above_energy_threshold;
+   bool bottom_side2_above_energy_threshold;
+   bool all_rest_scint_otherthan_4321t_less_than_eveto;
  //
   vector<double>          *hpgeevt_time;
   vector<vector<double>*> *hpgeevt_edep;
@@ -206,6 +232,53 @@ public:
   vector<string>   *trjp_processtype;
   vector<string>   *trjp_volumename;
 
+//---> theoretically, these histograms should be in class AnalysisManager,
+//     they are put here for convenience.
+// there are two groups of histograms, first group: energy-time distributions of scintillators and hpges
+  TH1D* heall_scint[18]; // 18 scintillators in MC
+  TH1D* heall_hpge[4];   //  0 XTRaA, 1 XTRaB, 2 A+B after grouping
+  TH1D* he_scint[7][18]; // this is for the tag, 
+   // first index 0 T+B, 1 to 6, the 6 different muon-through and muon-capture types,
+  TH1D* he_scint_xtra_signal[7][18]; // for at least one HPGe with 2.2MeV in signal time window from 8micro-second to 1ms
+  TH1D* he_xtra[7][4][14]; // second is for two XtRas,0 A, 1 B, 2 A+B, 3, only A and B both firing, 
+  double signal_time_range_cut[2][14]; //unit in MC ns
+/* third index is for different time windows
+0, plus-minus 50ns,
+1, 8micro-s to 1ms 
+2, 10micro-s to 1ms 
+3, 12micro-s to 1ms 
+4, 18micro-s to 1ms 
+5, 20micro-s to 1ms 
+6, 22micro-s to 1ms 
+7, 48micro-s to 1ms 
+8, 50micro-s to 1ms 
+9, 52micro-s to 1ms 
+10,98micro-s to 1ms 
+11,100micro-s to 1ms 
+12,102micro-s to 1ms 
+13,10ms to 100ms for background 
+*/
+//--> following two histograms are only for 2.2MeV events (2223.5keV to 2225.0keV) from 10micro-second to 1ms
+//    seems in MC the energy is 2224.35 to 2224.40keV
+  TH1D* htpassed_xtra_signal[7]; // time passed
+  TH1D* hn_2p2_multiplicity[7];  // 2.2MeV multiplicity
+//
+//---> second group of histograms: for muon-tag events, and muon-tag plus 2.2MeV events, the FLUKA input particles,
+//     this is copy-and-paste from find_neutron_signal_from_single_mc_ntuple.cxx
+//     first index: 7 types of muontags, 
+//     second index: 0 mu-, 1 mu+, 2 gamma, 3 e-, 4 e+, 5 neutron, 6 proton
+//     last index: 0 all muontag events, 1 events with at least one 2.2MeV HPGe inside 10microsecond-1ms signal time window
+   TH1D* hmcp_logke [7][7][2];
+   TH1D* hmcp_n     [7][7][2];
+   TH1D* hmcp_theta [7][7][2]; // from -90 to 90 degrees
+   TH1D* hmcp_phi   [7][7][2];
+   TH2D* hmcp_logke_vs_theta[7][7][2];
+   TH1D* hmcp_logtime       [7][7][2];
+   TH2D* hmcp_xvsy  [7][7][2];
+   TH1D* hmcp_z     [7][7][2];
+   TH1D* hmcp_num_mus[7][2]; // total number of mu- and mu+ together
+//
+   void FillEnergyandMonteCarloHistograms();
 };
 
 #endif // __XENON10PEVENTDATA_H__

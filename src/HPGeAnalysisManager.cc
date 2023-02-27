@@ -48,7 +48,7 @@ void
 HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
 {
 	m_pTreeFile = new TFile(m_hDataFilename.c_str(), "RECREATE", "File containing event data for HPGe");
-	m_pTree = new TTree("t1", "Tree containing event data for HPGe");
+//	m_pTree = new TTree("t1", "Tree containing event data for HPGe");
 
     gROOT->ProcessLine("#include <vector>");
     gInterpreter->GenerateDictionary("vector<vector<double>*>", "vector");
@@ -56,7 +56,7 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
     gInterpreter->GenerateDictionary("vector<vector<int>*>"   , "vector");
     gROOT->SetStyle("Plain");
 
-
+/*2023.02.24
     // MC true vertex information
     m_pTree->Branch("eventnumber",       &m_pEventData->eventnumber);
     m_pTree->Branch("vertex_xpos",       &m_pEventData->vertex_xpos);
@@ -75,17 +75,19 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
     m_pTree->Branch("mc_pz",&m_pEventData->mc_pz);
     m_pTree->Branch("mc_ke",&m_pEventData->mc_ke);
     m_pTree->Branch("mc_mass",&m_pEventData->mc_mass);
-
+*/
 /*
     // mother nuclei
     m_pTree->Branch("nuclei_baryonnumber",&m_pEventData->nuclei_baryonnumber);
     m_pTree->Branch("nuclei_charge",&m_pEventData->nuclei_charge);
 */
+/* 2023.02.24
    // hpge and scintillator energies (sum of hits energies), 2-dim variable, NOT 2-dim vector yet
     m_pTree->Branch("hpge_tote",&m_pEventData->hpge_tote,"hpge_tote[2]/D");
     m_pTree->Branch("hpge_time",&m_pEventData->hpge_time,"hpge_time[2]/D");
     m_pTree->Branch("scintillator_tote",&m_pEventData->scintillator_tote,"scintillator_tote[18]/D");
     m_pTree->Branch("scintillator_time",&m_pEventData->scintillator_time,"scintillator_time[18]/D");
+*/
 /*
     // hits in sensitive detectors
     m_pTree->Branch("hits_totnum",&m_pEventData->hits_totnum);
@@ -103,6 +105,7 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
     m_pTree->Branch("hits_depositingprocess",&m_pEventData->hits_depositingprocess);
     m_pTree->Branch("hits_volumename",       &m_pEventData->hits_volumename);
 */
+/* 2023.02.24
    // hpgeevt and scinevt
     m_pTree->Branch("scinevt_time",&m_pEventData->scinevt_time);
     m_pTree->Branch("scinevt_edep",&m_pEventData->scinevt_edep);
@@ -112,7 +115,8 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
     m_pTree->Branch("hpgeevt_id",  &m_pEventData->hpgeevt_id);
     m_pTree->Branch("primary_muontag_typeid",  &m_pEventData->primary_muontag_typeid);
     m_pTree->Branch("primary_muontag_index",   &m_pEventData->primary_muontag_index );
-
+*/
+/* 2023.02.24
     // trajectory and trajectory points
     if (NeedTrajectory) {
     m_pTree->Branch("trj_totnum",&m_pEventData->trj_totnum,"trj_totnum/I");
@@ -148,9 +152,9 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
     m_pTree->Branch("trjp_volumename","vector<string>",&m_pEventData->trjp_volumename);
    }
     }
-
-	m_pTree->SetMaxTreeSize(10e11);
-	m_pTree->AutoSave();
+*/
+//	m_pTree->SetMaxTreeSize(10e11);
+//      m_pTree->AutoSave();
 
 	m_pNbEventsToSimulateParameter = new TParameter<int>("nbevents", m_iNbEventsToSimulate);
 	m_pNbEventsToSimulateParameter->Write();
@@ -159,6 +163,45 @@ HPGeAnalysisManager::BeginOfRun(const G4Run *pRun)
 void
 HPGeAnalysisManager::EndOfRun(const G4Run *pRun)
 {
+//---> write all histograms from HPGeEventData to output file
+	m_pTreeFile->cd();
+   m_pTreeFile->mkdir("all_evts");
+   m_pTreeFile->cd("all_evts");
+   for (int iscint=0; iscint<18; iscint++) m_pEventData->heall_scint[iscint]->Write();
+   for (int ich=0; ich<4; ich++)           m_pEventData->heall_hpge[ich]->Write();
+//
+   for (int itype=0; itype<7; itype++) {
+     m_pTreeFile -> cd();
+     m_pTreeFile -> mkdir(Form("type%d",itype));
+     m_pTreeFile -> cd   (Form("type%d",itype));
+     m_pEventData->hn_2p2_multiplicity[itype]->Write();
+     m_pEventData->htpassed_xtra_signal[itype]->Write();
+     for (int iscint=0; iscint<18; iscint++) {
+       m_pEventData->he_scint[itype][iscint]->Write();
+       m_pEventData->he_scint_xtra_signal[itype][iscint]->Write();
+     }
+     for (int irange=0; irange<14; irange++) {
+       for (int ich=0; ich<4; ich++) m_pEventData->he_xtra[itype][ich][irange]->Write();
+     }
+   }
+   for (int itype=0; itype<7; itype++) {
+     for (int i=0;i<7;i++) {
+       m_pTreeFile -> cd();
+       m_pTreeFile -> mkdir(Form("mcp_tagtype%d_mcp%d",itype,i));
+       m_pTreeFile -> cd   (Form("mcp_tagtype%d_mcp%d",itype,i));
+       if (i==0) for (int j=0;j<2;j++) m_pEventData->hmcp_num_mus[itype][j]->Write();
+       for (int j=0;j<2;j++) {
+         m_pEventData->hmcp_logke  [itype][i][j]->Write();
+         m_pEventData->hmcp_n      [itype][i][j]->Write();
+         m_pEventData->hmcp_theta  [itype][i][j]->Write();
+         m_pEventData->hmcp_phi    [itype][i][j]->Write();
+         m_pEventData->hmcp_logtime[itype][i][j]->Write();
+         m_pEventData->hmcp_xvsy   [itype][i][j]->Write();
+         m_pEventData->hmcp_z      [itype][i][j]->Write();
+         m_pEventData->hmcp_logke_vs_theta[itype][i][j]->Write();
+       }
+     }
+   }
 	m_pTreeFile->Write();
 	m_pTreeFile->Close();
 }
@@ -370,16 +413,17 @@ HPGeAnalysisManager::FillHitsToNtuple(const G4Event *pEvent)
    } // end of if loop
   } // end of looping over all Trajectory
   m_pEventData->trjp_totnum=itemp_trjp_totnum;
-  }
+  } // end of if NeedTrajectory
 
   if(m_pEventData->hits_tote > 500. )
     m_pEventData->CalculateScintillatorHPGeEnergyAndTime();
 
-  //if(m_pEventData->hits_tote > 0. )
-  //if(m_pEventData->number_of_scinevts > 0)
   if(m_pEventData->hits_tote > 500. ) {
     m_pEventData->FindPrimaryMuonTagTypeID();
-    if (m_pEventData->primary_muontag_typeid>=0) m_pTree->Fill();
+    if (m_pEventData->primary_muontag_typeid>=0) {
+    //   m_pTree->Fill();
+       m_pEventData->FillEnergyandMonteCarloHistograms();
+    }
   }
 
   m_pEventData->Clear();

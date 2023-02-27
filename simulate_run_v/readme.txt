@@ -26,6 +26,16 @@ command to submit jobs is
 ~/bin/parallel-2020-slurm './simulate_minidex_run_v.sh RUN_V /ptmp/mpp/aempl/work/raphael/D-2.14gcm3-approx-24.151-days 3D {}' ::: /ptmp/mpp/aempl/work/raphael/D-2.14gcm3-approx-24.151-days/the.a-*
 ~/bin/parallel-2020-slurm './simulate_minidex_run_v.sh RUN_V /ptmp/mpp/aempl/work/raphael/E-2.14gcm3-approx-24.134-days 3E {}' ::: /ptmp/mpp/aempl/work/raphael/E-2.14gcm3-approx-24.134-days/the.a-*
 
+=========================================================
+2023.02.25, to increase MC statics, only save histograms
+=========================================================
+cd minidex_runv_mc_run1B
+hadd h.runv_mc_merged.1B.root $(find . -name "1B_RUN_V_simulate_minidex_*.root" | sort) >& log.merge_runv_mc_1B.txt
+cd minidex_runv_mc_run:B
+hadd h.runv_mc_merged.3B.root $(find . -name "3B_RUN_V_simulate_minidex_*.root" | sort) >& log.merge_runv_mc_3B.txt
+
+hadd h.runv_mc_merged.4A.root $(find . -name "4A_RUN_V_simulate_minidex_*.root" | sort) >& log.merge_runv_mc_4A.txt
+
 and commands to check status
 
 squeue -j job_ID
@@ -38,10 +48,10 @@ single run, test
 ./simulate_minidex_run_v.sh RUN_V /ptmp/mpp/aempl/work/raphael/E-2.14gcm3-approx-24.134-days 3E /ptmp/mpp/aempl/work/raphael/E-2.14gcm3-approx-24.134-days/the.a-ud6b_d_oo09-608544
 
 ------
-submit 10 jobs for testing
+submit 10 jobs for testing, and add up all
 ------
 ~/bin/parallel-2020-slurm './simulate_minidex_run_v.sh RUN_V /ptmp/mpp/xliu/work/raphael/A-2.14gcm3-approx-24.154-days 4A {}' ::: /ptmp/mpp/xliu/work/raphael/A-2.14gcm3-approx-24.154-days/the.a-*
-
+hadd h.runv_mc_merged.4A.root $(find . -name "4A_RUN_V_simulate_minidex_*.root" | sort) >& log.merge_runv_mc_4A.txt
 
 ----> 4A with trajectory and trajector points information saved
 ~/bin/parallel-2020-slurm './simulate_minidex_run_v.sh RUN_V /ptmp/mpp/aempl/work/raphael/A-2.14gcm3-approx-24.154-days 4A {}' ::: /ptmp/mpp/aempl/work/raphael/A-2.14gcm3-approx-24.154-days/the.a-*

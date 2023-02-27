@@ -103,6 +103,137 @@ HPGeEventData::HPGeEventData()
     trjp_processtype  = new vector<string>;
     trjp_volumename   = new vector<string>;
 
+//--->time range cut defined here
+/* third index is for different time windows
+ * 0, plus-minus 50ns,
+ * 1, 8micro-s to 1ms 
+ * 2, 10micro-s to 1ms 
+ * 3, 12micro-s to 1ms 
+ * 4, 18micro-s to 1ms 
+ * 5, 20micro-s to 1ms 
+ * 6, 22micro-s to 1ms 
+ * 7, 48micro-s to 1ms 
+ * 8, 50micro-s to 1ms 
+ * 9, 52micro-s to 1ms 
+ * 10,98micro-s to 1ms 
+ * 11,100micro-s to 1ms 
+ * 12,102micro-s to 1ms 
+ * 13,10ms to 100ms for background 
+ * */
+   signal_time_range_cut[0][0]=-50.0; // unit ns
+   signal_time_range_cut[1][0]=50.0;
+ //
+   signal_time_range_cut[0][1]=8000.0; // 8micros
+   signal_time_range_cut[0][2]=10000.0; // 10micros
+   signal_time_range_cut[0][3]=12000.0; // 12micros
+   signal_time_range_cut[0][4]=18000.0; // 18micros
+   signal_time_range_cut[0][5]=20000.0; // 20micros
+   signal_time_range_cut[0][6]=22000.0; // 22micros
+   signal_time_range_cut[0][7]=48000.0; // 48micros
+   signal_time_range_cut[0][8]=50000.0; // 50micros
+   signal_time_range_cut[0][9]=52000.0; // 52micros
+   signal_time_range_cut[0][10]=98000.0; //   98micros
+   signal_time_range_cut[0][11]=100000.0; // 100micros
+   signal_time_range_cut[0][12]=102000.0; // 102micros
+   for (int itemp=1; itemp<=12; itemp++) 
+    signal_time_range_cut[1][itemp]=1000000.0;  // 1ms = 1.0e6 ns
+ //
+   signal_time_range_cut[0][13]=10000000.0; // 10ms
+   signal_time_range_cut[1][13]=100000000.0; // 100ms
+
+//---> create Tag-related histograms here
+     for (int iscint=0; iscint<18; iscint++) {
+         heall_scint[iscint] = new TH1D(Form("heall_scint%d",iscint),
+                                        Form("heall_scint%d",iscint),
+                                            500, 0.0, 50000.0);
+     }
+     for (int icha=0; icha<4; icha++) {
+         heall_hpge[icha] = new TH1D(Form("heall_hpge%d",icha),
+                                     Form("heall_hpge%d",icha),
+                                     10000,0.0,10000.0);
+     }
+  for (int itype=0; itype<7; itype++) {
+     for (int iscint=0; iscint<18; iscint++) {
+         he_scint[itype][iscint] = new TH1D(Form("he_scint%d_type%d",iscint,itype),
+                                            Form("he_scint%d_type%d",iscint,itype),
+                                            500, 0.0, 50000.0);
+         he_scint_xtra_signal[itype][iscint] = new TH1D(Form("he_scint%d_type%d_xtra_signal",iscint,itype),
+                                                        Form("he_scint%d_type%d_xtra_signal",iscint,itype),
+                                            500, 0.0, 50000.0); //keV
+     }
+     for (int irange=0; irange<14; irange++) {
+      for (int icha=0; icha<4; icha++){
+       he_xtra[itype][icha][irange] = new TH1D(Form("he_xtra_chn%d_type%d_time%d",icha,itype,irange),
+                                               Form("he_xtra_chn%d_type%d_time%d",icha,itype,irange),
+                                    10000, 0.0, 10000.0); //keV
+      }
+     }
+     htpassed_xtra_signal[itype] = new TH1D(Form("htpassed_xtra_signal_type%d",itype),
+                                            Form("htpassed_xtra_signal_type%d",itype),
+                                    1000, 0.0, 1000000.0); // unit ns
+    hn_2p2_multiplicity[itype] =  new TH1D(Form("hn_2p2_multiplicity_type%d",itype),
+                                           Form("hn_2p2_multiplicity_type%d",itype),
+                                                10,-0.5,9.5);
+  }
+//---> FLUKA input particles for various MuonTag type
+   char* mcp_name[7];
+   mcp_name[0]="mu-";
+   mcp_name[1]="mu+";
+   mcp_name[2]="gamma";
+   mcp_name[3]="e-";
+   mcp_name[4]="e+";
+   mcp_name[5]="neutron";
+   mcp_name[6]="proton";
+//
+   for (int i=0; i<7; i++) { // MuonTag types
+     for (int j=0; j<7; j++) { // 7 types of FLUKA input particles
+       for (int k=0; k<2; k++) {
+          hmcp_logke[i][j][k] = new TH1D(
+                          Form("hmcp_logke_tagtype%d_mcp%d_2p2%d",i,j,k),
+                          Form("hmcp_logke_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         180,0.0,9.0); // from keV to EeV
+          hmcp_n[i][j][k] = new TH1D(
+                            Form("hmcp_n_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_n_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         100,-0.5,99.5); // how many of these second particles from each primary muon
+          hmcp_theta[i][j][k] = new TH1D(
+                            Form("hmcp_theta_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_theta_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         180,0.0,180.0);  // theta
+          hmcp_phi[i][j][k] = new TH1D(
+                            Form("hmcp_phi_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_phi_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         360,-180.0,180.0);  // phi
+          hmcp_logke_vs_theta[i][j][k] = new TH2D(
+                            Form("hmcp_logke_vs_theta_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_logke_vs_theta_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         180,0.0,9.0,     // logke
+                         180,0.0,180.0);  // theta
+          hmcp_logtime[i][j][k] = new TH1D(
+                                 Form("hmcp_logtime_tagtype%d_mcp%d_2p2%d",i,j,k),
+                                 Form("hmcp_logtime_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                                 100,0.0,10.0); // unit log10(ns)
+          hmcp_xvsy[i][j][k] = new TH2D(
+                            Form("hmcp_xvsy_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_xvsy_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         100,-2000.0,2000.0,  // unit mm
+                         100,-2000.0,2000.0);
+          hmcp_z[i][j][k] = new TH1D(
+                            Form("hmcp_z_tagtype%d_mcp%d_2p2%d",i,j,k),
+                            Form("hmcp_z_tagtype%d_mcp%d_%s_2p2%d",i,j,mcp_name[j],k),
+                         100,-2000.0,2000.0); // unit mm
+       }
+     }
+   }
+   for (int i=0; i<7; i++) {
+     for (int k=0; k<2; k++) {
+        hmcp_num_mus[i][k] = new TH1D(
+              Form("hmcp_num_mus_tagtype%d_2p2%d",i,k),
+              Form("hmcp_num_mus_tagtype%d_2p2%d",i,k),
+             10,-0.5,9.5);
+     }
+   }
+//
 }
 
 HPGeEventData::~HPGeEventData()
@@ -135,10 +266,10 @@ HPGeEventData::~HPGeEventData()
     delete hits_depositingprocess;
     delete hits_volumename;
 
-    for (int i=0; i<scinevt_edep->size(); i++) delete (*scinevt_edep)[i];
-    for (int i=0; i<scinevt_id  ->size(); i++) delete (*scinevt_id)  [i];
-    for (int i=0; i<hpgeevt_edep->size(); i++) delete (*hpgeevt_edep)[i];
-    for (int i=0; i<hpgeevt_id  ->size(); i++) delete (*hpgeevt_id)  [i];
+    for (unsigned int i=0; i<scinevt_edep->size(); i++) delete (*scinevt_edep)[i];
+    for (unsigned int i=0; i<scinevt_id  ->size(); i++) delete (*scinevt_id)  [i];
+    for (unsigned int i=0; i<hpgeevt_edep->size(); i++) delete (*hpgeevt_edep)[i];
+    for (unsigned int i=0; i<hpgeevt_id  ->size(); i++) delete (*hpgeevt_id)  [i];
     delete scinevt_time;
     delete scinevt_edep;
     delete scinevt_id;
@@ -243,13 +374,13 @@ HPGeEventData::Clear()
 
 //---> must be very careful in cleaning multi-dimensional vectors
      scinevt_time->clear();
-    for (int i=0; i<scinevt_edep->size(); i++) delete (*scinevt_edep)[i];
-    for (int i=0; i<scinevt_id->size(); i++) delete (*scinevt_id)[i];
+    for (unsigned int i=0; i<scinevt_edep->size(); i++) delete (*scinevt_edep)[i];
+    for (unsigned int i=0; i<scinevt_id->size(); i++) delete (*scinevt_id)[i];
      scinevt_edep->clear();
      scinevt_id  ->clear();
      hpgeevt_time->clear();
-    for (int i=0; i<hpgeevt_edep->size(); i++) delete (*hpgeevt_edep)[i];
-    for (int i=0; i<hpgeevt_id->size(); i++) delete (*hpgeevt_id)[i];
+    for (unsigned int i=0; i<hpgeevt_edep->size(); i++) delete (*hpgeevt_edep)[i];
+    for (unsigned int i=0; i<hpgeevt_id->size(); i++) delete (*hpgeevt_id)[i];
      hpgeevt_edep->clear();
      hpgeevt_id  ->clear();
      primary_muontag_typeid=-1;
@@ -399,7 +530,7 @@ void HPGeEventData::CalculateScintillatorHPGeEnergyAndTime()
      buffer_hits_volumeid->clear();
      buffer_hits_seedid  ->clear();
      iflag_scintillator_hits=1;
-    for (int ihit=0; ihit<scinevt_hits_edep->size(); ihit++) {
+    for (unsigned int ihit=0; ihit<scinevt_hits_edep->size(); ihit++) {
       buffer_hits_time    ->push_back((*scinevt_hits_time)[ihit]);
       buffer_hits_edep    ->push_back((*scinevt_hits_edep)[ihit]);
       buffer_hits_volumeid->push_back((*scinevt_hits_volumeid)[ihit]);
@@ -433,7 +564,7 @@ void HPGeEventData::CalculateScintillatorHPGeEnergyAndTime()
      buffer_hits_volumeid->clear();
      buffer_hits_seedid  ->clear();
      iflag_scintillator_hits=0;
-    for (int ihit=0; ihit<hpgeevt_hits_edep->size(); ihit++) {
+    for (unsigned int ihit=0; ihit<hpgeevt_hits_edep->size(); ihit++) {
       buffer_hits_time    ->push_back((*hpgeevt_hits_time)[ihit]);
       buffer_hits_edep    ->push_back((*hpgeevt_hits_edep)[ihit]);
       buffer_hits_volumeid->push_back((*hpgeevt_hits_volumeid)[ihit]);
@@ -473,7 +604,7 @@ void HPGeEventData::ClusterBufferHitsInTime()
     seed_maxhite->clear();
     double time_cluster_window_size=100.0; //unit ns
   //--> first loop over all hits, assign them to seed_time, if no match, create a new seed_time
-    for (int ihit=0; ihit<buffer_hits_time->size(); ihit++) {
+    for (unsigned int ihit=0; ihit<buffer_hits_time->size(); ihit++) {
        bool found_time_seed=kFALSE;
        int  time_seed_index=0;
        while (time_seed_index<seed_time->size()) {
@@ -515,7 +646,7 @@ void HPGeEventData::ClusterBufferHitsInTime()
   // protection of bufferevt_edep and _time maximum size
     number_of_bufferevts=seed_time->size();
     if (number_of_bufferevts>=1000) number_of_bufferevts=1000;
-    for (int ihit=0; ihit<buffer_hits_time->size(); ihit++) {
+    for (unsigned int ihit=0; ihit<buffer_hits_time->size(); ihit++) {
       if (    (*buffer_hits_seedid)[ihit]<1000
            && (*buffer_hits_volumeid)[ihit]>=0
            && (*buffer_hits_volumeid)[ihit]<=17     ) {
@@ -535,47 +666,197 @@ void HPGeEventData::FindPrimaryMuonTagTypeID()
    double muontag_ethreshold=4000.0;     // unit keV
    double muontag_evetothreshold=3000.0; // unit keV
    if (scinevt_time->size()<=0) return;  // no single scintillator with registered energy
-   double Muon_E[18];
-//---> start looping over all scinevt
-   for (int imu=0; imu<scinevt_time->size(); imu++) {
-     for (int iscint=0; iscint<18; iscint++) Muon_E[iscint]=0.0;
-     for (int ich=0; ich<(*scinevt_edep)[imu]->size(); ich++) 
-          Muon_E     [(*(*scinevt_id)[imu])[ich]] = (*(*scinevt_edep)[imu])[ich]; // uni keV
-       if ( Muon_E[0]>muontag_ethreshold && Muon_E[1]>muontag_ethreshold ) primary_muontag_typeid=0;
-   //---> muonthrough-1b1
-       if (   Muon_E[0] >muontag_ethreshold && Muon_E[1]>muontag_ethreshold
-          &&Muon_E[2] >muontag_ethreshold
-          &&Muon_E[12]>muontag_ethreshold )  primary_muontag_typeid=1;
-    //---> muonthrough-2b2
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[1]>muontag_ethreshold
-          &&Muon_E[3]>muontag_ethreshold
-          &&Muon_E[13]>muontag_ethreshold )  primary_muontag_typeid=2;
-    //---> muonthrough-13
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[1]>muontag_ethreshold
-          &&Muon_E[2]>muontag_ethreshold && Muon_E[4]>muontag_ethreshold
-          &&Muon_E[12]>muontag_ethreshold )  primary_muontag_typeid=3;
-    //---> muonthrough-24
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[1]>muontag_ethreshold
-          &&Muon_E[3]>muontag_ethreshold && Muon_E[5]>muontag_ethreshold
-          &&Muon_E[13]>muontag_ethreshold )  primary_muontag_typeid=4;
-    //---> muoncapture-13
-    //---> 2022.09.26, for 13-capture tag, no cuts on small 2 and 4, same for 24-capture tag
-         all_rest_scint_less_than_eveto=kTRUE;
-         for (int icha=0; icha<16; icha++) {
-           if (icha!=0 && icha!=2 && icha!=3 && icha!=4 && icha!=5) {
-             if (Muon_E[icha]>muontag_evetothreshold) all_rest_scint_less_than_eveto=kFALSE;
-           }
-         }
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[2]>muontag_ethreshold && Muon_E[4]>muontag_ethreshold ){
-         if (all_rest_scint_less_than_eveto) primary_muontag_typeid=5;
-       }
-    //---> muoncapture-24
-       if (    Muon_E[0]>muontag_ethreshold && Muon_E[3]>muontag_ethreshold && Muon_E[5]>muontag_ethreshold ){
-         if (all_rest_scint_less_than_eveto) primary_muontag_typeid=6;
-       }
-    //---> index
-       if (primary_muontag_typeid>=0&&primary_muontag_index<0) primary_muontag_index=imu;
-//--> finished looping over all scinevt
+   vector<int> *vec_primary_muontag_typeid = new vector<int>;
+   vector<int> *vec_primary_muontag_index  = new vector<int>;
+//---> first loop over all scinevt to pick out all primary tags
+   for (unsigned int imu=0; imu<scinevt_time->size(); imu++) {
+     if ((*scinevt_edep)[imu]->size()<3) continue; // scinevt with less than 3 scintillators firing can not be any type of primary tag
+     big_top_above_energy_threshold   =kFALSE; 
+     big_bottom_above_energy_threshold=kFALSE; 
+     small_1_above_energy_threshold   =kFALSE; 
+     small_2_above_energy_threshold   =kFALSE; 
+     small_3_above_energy_threshold   =kFALSE; 
+     small_4_above_energy_threshold   =kFALSE; 
+     bottom_side1_above_energy_threshold   =kFALSE; 
+     bottom_side2_above_energy_threshold   =kFALSE; 
+     all_rest_scint_otherthan_4321t_less_than_eveto =kTRUE;
+     for (unsigned int ich=0; ich<(*scinevt_edep)[imu]->size(); ich++) {
+        if ( (*(*scinevt_edep)[imu])[ich]>muontag_ethreshold ) {
+           if      ((*(*scinevt_id)[imu])[ich]==0)  big_top_above_energy_threshold     =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==1)  big_bottom_above_energy_threshold  =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==2)  small_1_above_energy_threshold     =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==3)  small_2_above_energy_threshold     =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==4)  small_3_above_energy_threshold     =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==5)  small_4_above_energy_threshold     =kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==12) bottom_side1_above_energy_threshold=kTRUE;
+           else if ((*(*scinevt_id)[imu])[ich]==13) bottom_side2_above_energy_threshold=kTRUE;
+        }
+        if ( (*(*scinevt_edep)[imu])[ich]>muontag_evetothreshold ) {
+          if ( (*(*scinevt_id)[imu])[ich]>5 || (*(*scinevt_id)[imu])[ich]==1 ) 
+                    all_rest_scint_otherthan_4321t_less_than_eveto=kFALSE;
+        }
+     }// finished looping over all scintillators for this event, 
+    // now check what MuonTag Type it is, notice, 
+    //
+     int itemp_muoneventtype=-1;
+     if (   big_top_above_energy_threshold
+         && big_bottom_above_energy_threshold ) itemp_muoneventtype=0;
+     if (   big_top_above_energy_threshold
+         && big_bottom_above_energy_threshold
+         && small_1_above_energy_threshold
+         && bottom_side1_above_energy_threshold ) itemp_muoneventtype=1;
+     if (   big_top_above_energy_threshold
+         && big_bottom_above_energy_threshold
+         && small_2_above_energy_threshold
+         && bottom_side2_above_energy_threshold ) itemp_muoneventtype=2;
+     if (   big_top_above_energy_threshold
+         && big_bottom_above_energy_threshold
+         && small_3_above_energy_threshold
+         && small_1_above_energy_threshold
+         && bottom_side1_above_energy_threshold ) itemp_muoneventtype=3;
+     if (   big_top_above_energy_threshold
+         && big_bottom_above_energy_threshold
+         && small_4_above_energy_threshold
+         && small_2_above_energy_threshold
+         && bottom_side2_above_energy_threshold ) itemp_muoneventtype=4;
+     if (   big_top_above_energy_threshold
+         && small_3_above_energy_threshold
+         && small_1_above_energy_threshold
+         && all_rest_scint_otherthan_4321t_less_than_eveto ) itemp_muoneventtype=5;
+     if (   big_top_above_energy_threshold
+         && small_4_above_energy_threshold
+         && small_2_above_energy_threshold
+         && all_rest_scint_otherthan_4321t_less_than_eveto ) itemp_muoneventtype=6;
+     if (itemp_muoneventtype>=0) {
+       vec_primary_muontag_typeid->push_back(itemp_muoneventtype);
+       vec_primary_muontag_index ->push_back(imu);
+     }
+   } // finished looping over all scinevt 
+//--> second loop over vec_primary_muontag to pick the primary tag earliest in time as THE tag for this simulated event
+   if (vec_primary_muontag_index->size()<=0) return;
+   primary_muontag_typeid=(*vec_primary_muontag_typeid)[0];
+   primary_muontag_index =(*vec_primary_muontag_index) [0];
+   for (unsigned int ipritag=1; ipritag<vec_primary_muontag_index->size(); ipritag++) {
+      if (   (*scinevt_time)[(*vec_primary_muontag_index)[ipritag]]
+            <(*scinevt_time)[primary_muontag_index]                 )
+          primary_muontag_typeid=(*vec_primary_muontag_typeid)[ipritag];
+          primary_muontag_index =(*vec_primary_muontag_index) [ipritag];
    }
+   delete vec_primary_muontag_typeid;
+   delete vec_primary_muontag_index;
    return;
+}
+
+
+void HPGeEventData::FillEnergyandMonteCarloHistograms()
+{
+//--> first fill histograms for all HPGes and Scintillators
+   double HPGe_E[3]; // 
+   for (unsigned int ihpge=0; ihpge<hpgeevt_time->size(); ihpge++) {
+        for (int ich=0; ich<3; ich++) HPGe_E[ich]=0.0;
+        for (unsigned int ich=0; ich<(*hpgeevt_edep)[ihpge]->size(); ich++) 
+          HPGe_E[(*(*hpgeevt_id)[ihpge])[ich]] = (*(*hpgeevt_edep)[ihpge])[ich];
+        HPGe_E[2]=HPGe_E[0]+HPGe_E[1];
+        if (HPGe_E[0]>0.0) heall_hpge[0]->Fill(HPGe_E[0]);
+        if (HPGe_E[1]>0.0) heall_hpge[1]->Fill(HPGe_E[1]);
+                           heall_hpge[2]->Fill(HPGe_E[2]);
+        if (HPGe_E[0]>0.0 && HPGe_E[1]>0.0) 
+                           heall_hpge[3]->Fill(HPGe_E[2]);
+   }
+   for (unsigned int imu=0; imu<scinevt_time->size(); imu++) {
+       for (unsigned int ich=0; ich<(*scinevt_edep)[imu]->size(); ich++) {
+          heall_scint[(*(*scinevt_id)[imu])[ich]] -> Fill((*(*scinevt_edep)[imu])[ich]);
+       }
+   }
+//--> then fill scintillator energy histograms from primary tag
+   if (primary_muontag_typeid<0) return;
+   for (unsigned int ich=0; ich<(*scinevt_edep)[primary_muontag_index]->size(); ich++) {
+         he_scint[primary_muontag_typeid][(*(*scinevt_id)  [primary_muontag_index])[ich]]
+                                   ->Fill((*(*scinevt_edep)[primary_muontag_index])[ich]);
+   }
+//--> then loop over all hpgeevt and
+//    fill Xtra energy histograms for the 14 different time range
+   int itemp_number_of_2p2_in_signal_time_window=0;
+   for (unsigned int ihpge=0; ihpge<hpgeevt_time->size(); ihpge++) {
+     for (int ich=0; ich<3; ich++) HPGe_E[ich]=0.0;
+     for (unsigned int ich=0; ich<(*hpgeevt_edep)[ihpge]->size(); ich++) 
+       HPGe_E[(*(*hpgeevt_id)[ihpge])[ich]] = (*(*hpgeevt_edep)[ihpge])[ich];
+     HPGe_E[2]=HPGe_E[0]+HPGe_E[1];
+     double time_difference_hpge_muontag=((*hpgeevt_time)[ihpge]-(*scinevt_time)[primary_muontag_index]); // unit ns
+     for (int irange=0; irange<14; irange++) {
+       if (   time_difference_hpge_muontag>=signal_time_range_cut[0][irange]
+            &&time_difference_hpge_muontag< signal_time_range_cut[1][irange] ) {
+          if (HPGe_E[0]>0.0) he_xtra[primary_muontag_typeid][0][irange]->Fill(HPGe_E[0]);
+          if (HPGe_E[1]>0.0) he_xtra[primary_muontag_typeid][1][irange]->Fill(HPGe_E[1]);
+                             he_xtra[primary_muontag_typeid][2][irange]->Fill(HPGe_E[2]);
+          if (HPGe_E[0]>0.0 && HPGe_E[1]>0.0) 
+                             he_xtra[primary_muontag_typeid][3][irange]->Fill(HPGe_E[2]);
+       }
+     }// finished looping over all time range
+     if (   time_difference_hpge_muontag>=signal_time_range_cut[0][2]
+          &&time_difference_hpge_muontag< signal_time_range_cut[1][2] 
+          &&HPGe_E[2] > 2223.0
+          &&HPGe_E[2] < 2225.0 ) { // hpgeevt energy within range inside 10micro-s to 1ms, default signal window
+        itemp_number_of_2p2_in_signal_time_window++;
+        htpassed_xtra_signal[primary_muontag_typeid]->Fill(time_difference_hpge_muontag);
+     }
+   } // finished looping over all hpgeevt
+//---> if there is at least one 2.2MeV in 10micros to 1ms
+   hn_2p2_multiplicity[primary_muontag_typeid]->Fill(itemp_number_of_2p2_in_signal_time_window);
+   if (itemp_number_of_2p2_in_signal_time_window>0) {
+      for (unsigned int ich=0; ich<(*scinevt_edep)[primary_muontag_index]->size(); ich++)
+         he_scint_xtra_signal[primary_muontag_typeid][(*(*scinevt_id)  [primary_muontag_index])[ich]]
+                                               ->Fill((*(*scinevt_edep)[primary_muontag_index])[ich]);
+   }
+//---> finally loop over all FLUKA input particles
+//---> fill all histograms for Geant4-input MC particles
+   int itemp_number_of_mcp[7];
+     int itemp_num_mus=0;
+     for (unsigned int imcp=0; imcp<mc_pdgcode->size(); imcp++) {
+        int index_mcp=-1;
+        if      ( (*mc_pdgcode)[imcp]==13 )  index_mcp=0;  // mu-
+        else if ( (*mc_pdgcode)[imcp]==-13)  index_mcp=1;  // mu+
+        else if ( (*mc_pdgcode)[imcp]==22 )  index_mcp=2;  // gamma
+        else if ( (*mc_pdgcode)[imcp]==11 )  index_mcp=3;  // e-
+        else if ( (*mc_pdgcode)[imcp]==-11)  index_mcp=4;  // e+
+        else if ( (*mc_pdgcode)[imcp]==2112) index_mcp=5;  // neutron
+        else if ( (*mc_pdgcode)[imcp]==2212) index_mcp=5;  // proton
+        if (index_mcp>=0) { // fill histograms only for the above 7 types of mc input particles
+           if (index_mcp==0||index_mcp==1) itemp_num_mus++;
+           itemp_number_of_mcp[index_mcp]++;
+          //
+           float mcp_theta = atan2(     (*mc_pz)[imcp],
+                                   sqrt((*mc_px)[imcp]*(*mc_px)[imcp]+(*mc_py)[imcp]*(*mc_py)[imcp]) )*180.0/TMath::Pi();
+           mcp_theta = 90.0-mcp_theta;
+           float mcp_phi =  atan2((*mc_py)[imcp],(*mc_px)[imcp])*180.0/TMath::Pi();
+          //
+           hmcp_logke  [primary_muontag_typeid][index_mcp][0]->Fill(log10((*mc_ke)[imcp]));
+           hmcp_theta  [primary_muontag_typeid][index_mcp][0]->Fill(mcp_theta);
+           hmcp_phi    [primary_muontag_typeid][index_mcp][0]->Fill(mcp_phi);
+           hmcp_logtime[primary_muontag_typeid][index_mcp][0]->Fill(log10((*vertex_time)[imcp]));
+           hmcp_xvsy   [primary_muontag_typeid][index_mcp][0]->Fill((*vertex_xpos)[imcp],(*vertex_ypos)[imcp]);
+           hmcp_z      [primary_muontag_typeid][index_mcp][0]->Fill((*vertex_zpos)[imcp]);
+           hmcp_logke_vs_theta[primary_muontag_typeid][index_mcp][0]->Fill(log10((*mc_ke)[imcp]), mcp_theta);
+          //
+          if (itemp_number_of_2p2_in_signal_time_window>0) {
+           hmcp_logke  [primary_muontag_typeid][index_mcp][1]->Fill(log10((*mc_ke)[imcp]));
+           hmcp_theta  [primary_muontag_typeid][index_mcp][1]->Fill(mcp_theta);
+           hmcp_phi    [primary_muontag_typeid][index_mcp][1]->Fill(mcp_phi);
+           hmcp_logtime[primary_muontag_typeid][index_mcp][1]->Fill(log10((*vertex_time)[imcp]));
+           hmcp_xvsy   [primary_muontag_typeid][index_mcp][1]->Fill((*vertex_xpos)[imcp],(*vertex_ypos)[imcp]);
+           hmcp_z      [primary_muontag_typeid][index_mcp][1]->Fill((*vertex_zpos)[imcp]);
+           hmcp_logke_vs_theta[primary_muontag_typeid][index_mcp][1]->Fill(log10((*mc_ke)[imcp]), mcp_theta);
+          }
+        }
+     }
+     for (int i=0;i<7;i++) {
+         hmcp_n[primary_muontag_typeid][i][0]->Fill(itemp_number_of_mcp[i]);
+       if (itemp_number_of_2p2_in_signal_time_window>0)
+         hmcp_n[primary_muontag_typeid][i][1]->Fill(itemp_number_of_mcp[i]);
+     }
+     hmcp_num_mus[primary_muontag_typeid][0]->Fill(itemp_num_mus);
+    if (itemp_number_of_2p2_in_signal_time_window>0) 
+     hmcp_num_mus[primary_muontag_typeid][1]->Fill(itemp_num_mus);
+//
+    return;
 }
