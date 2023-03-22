@@ -25,6 +25,8 @@ cenv legend-base
 cenv legend-old
 . /opt/geant4/share/Geant4-10.5.1/geant4make/geant4make.sh 
 
+git checkout HEAD^ file/to/overwrite
+git pull
 
 --------------------------
 procedure to add new key to github
