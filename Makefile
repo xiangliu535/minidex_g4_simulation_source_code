@@ -5,6 +5,7 @@
 name := minidex_sim
 G4TARGET := $(name)
 G4EXLIB := true
+G4USE_STD17 := 1
 
 G4DEBUG := 0
 
