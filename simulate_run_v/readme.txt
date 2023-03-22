@@ -36,7 +36,19 @@ hadd h.runv_mc_merged.3B.root $(find . -name "3B_RUN_V_simulate_minidex_*.root" 
 
 hadd h.runv_mc_merged.4A.root $(find . -name "4A_RUN_V_simulate_minidex_*.root" | sort) >& log.merge_runv_mc_4A.txt
 
+=========================================================
+2023.03.21, update
+=========================================================
+1. now use
+superscript_submit_runv_jobs.sh [1-20]
+to increase MC statistics
+2, to merge 1300 files from e.g. 1A, hadd has a high rate crashing/hanging, 
+   therefore, hadd is given up and my own code to sum up all histograms from 1A are used.
+   sum_up_all_systematic_histograms_from_mc.cxx
+
+=========================================================
 and commands to check status
+=========================================================
 
 squeue -j job_ID
 squeue -u xliu
@@ -65,3 +77,5 @@ old input files
 /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-519-hours
 /ptmp/mpp/aempl/work/raphael/4.75GV-1.85gcm3-approx-520-hours
 
+
+---> 2023.03.05, merge 14 need rerun

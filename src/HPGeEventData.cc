@@ -692,8 +692,10 @@ void HPGeEventData::FindPrimaryMuonTagTypeID()
            else if ((*(*scinevt_id)[imu])[ich]==13) bottom_side2_above_energy_threshold=kTRUE;
         }
         if ( (*(*scinevt_edep)[imu])[ich]>muontag_evetothreshold ) {
-          if ( (*(*scinevt_id)[imu])[ich]>5 || (*(*scinevt_id)[imu])[ich]==1 ) 
-                    all_rest_scint_otherthan_4321t_less_than_eveto=kFALSE;
+          if ( (*(*scinevt_id)[imu])[ich]>5 && (*(*scinevt_id)[imu])[ich]<16 ) 
+              all_rest_scint_otherthan_4321t_less_than_eveto=kFALSE;
+          if ( (*(*scinevt_id)[imu])[ich]==1 ) 
+              all_rest_scint_otherthan_4321t_less_than_eveto=kFALSE;
         }
      }// finished looping over all scintillators for this event, 
     // now check what MuonTag Type it is, notice, 

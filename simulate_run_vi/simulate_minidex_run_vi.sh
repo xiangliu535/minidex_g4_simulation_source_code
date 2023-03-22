@@ -80,7 +80,7 @@ if [ -f /ptmp/mpp/projects/gedet/sw/scripts/bin/mpcdf-mpp-env.sh ]; then
     . /ptmp/mpp/projects/gedet/sw/scripts/bin/mpcdf-mpp-env.sh
 fi
 #
-cenv legend-old /afs/ipp-garching.mpg.de/home/x/xliu/geant4/bin/Linux-g++/minidex_sim -f ${macname} -n ${number_of_events_we_run} -o ${outputfile}
+cenv legend-base /afs/ipp-garching.mpg.de/home/x/xliu/geant4/bin/Linux-g++/minidex_sim -f ${macname} -n ${number_of_events_we_run} -o ${outputfile}
 #. /opt/geant4/share/Geant4-10.5.1/geant4make/geant4make.sh 
 #
 # --> move output

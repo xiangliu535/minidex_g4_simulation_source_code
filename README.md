@@ -13,6 +13,8 @@ to commit newly modified file into repository
 git status
 git add [files]
 git commit -m "new comments"
+or
+git commit -m "new comments" -a
 git push -u origin main
 
 
