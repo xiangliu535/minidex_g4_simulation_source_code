@@ -1,0 +1,1 @@
+g++ -Wall -o sum_up_all_systematic_histograms_from_mc.exe sum_up_all_systematic_histograms_from_mc.cxx `root-config --cflags` `root-config --libs`

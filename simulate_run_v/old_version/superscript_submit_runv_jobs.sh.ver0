@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# this script is used to submit runv jobs A-E, input argument must be 1 to 20
+#
+runnumber=$1
+echo run number is $runnumber
+if [ $(($runnumber)) -lt 1 ] || [ $(($runnumber)) -gt 20 ]; then
+  echo input run number must be 1 to 20
+  exit
+fi
+counter=2
+while [ $counter -le 2 ]
+do
+#  echo counter $counter
+  case $counter in
+  1) subnumber="A";;
+  2) subnumber="B";;
+  3) subnumber="C";;
+  4) subnumber="D";;
+  5) subnumber="E";;
+  esac
+#
+  echo now submit ${runnumber}${subnumber}
+  ~/bin/parallel-2020-slurm './simulate_minidex_run_v.sh RUN_V /ptmp/mpp/aempl/work/raphael/'${subnumber}'-2.14gcm3-approx-24.154-days '${runnumber}''${subnumber}' {}' ::: /ptmp/mpp/aempl/work/raphael/${subnumber}-2.14gcm3-approx-24.154-days/the.a-*
+  sleep 10
+  ((counter++))
+done
+
